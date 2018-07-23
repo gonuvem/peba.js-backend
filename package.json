@@ -1,0 +1,20 @@
+{
+  "name": "peba-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://moitaneto@bitbucket.org/gonuvemdev/peba-api.git",
+  "author": "Edson Moita <moitaneto@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "restify": "^7.2.1",
+    "restify-router": "^0.5.0"
+  },
+  "devDependencies": {
+    "jest": "^23.4.1",
+    "nodemon": "^1.18.3",
+    "supertest": "^3.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
