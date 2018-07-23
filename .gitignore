@@ -21,6 +21,9 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# Remove volume of mongodb
+data
+
 # nyc test coverage
 .nyc_output
 

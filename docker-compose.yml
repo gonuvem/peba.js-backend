@@ -1,0 +1,24 @@
+version: "3"
+services:
+    db:
+        image: mongo
+        environment:
+            - MONGODB_DBNAME=peba
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "27017:27017"  
+    app:
+        user: "${UID}:${GID}"
+        container_name: peba_api
+        restart: always
+        volumes:
+            - ./:/usr/src/app
+            - /usr/src/app/node_modules
+        build: .
+        ports: 
+            - "8080:8080"
+        links:
+            - db
+        depends_on:
+            - db

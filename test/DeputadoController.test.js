@@ -14,6 +14,15 @@ describe('Test Deputado Controller', () => {
                 expect(response.statusCode).toBe(200)
             })
         });
+
+        test('Test message OK', () => {
+            return request(app).get(baseRoute).send()
+            .then(response => {
+                expect(response.body)
+                .toHaveProperty('message', 'Teste do controller de deputados')
+            })
+        });
+
     });
     
 });
