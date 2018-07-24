@@ -22,6 +22,6 @@
   },
   "scripts": {
     "start": "nf start",
-    "test": "jest"
+    "test": "jest --forceExit --detectOpenHandles"
   }
 }
