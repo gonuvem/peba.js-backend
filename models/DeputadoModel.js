@@ -6,8 +6,7 @@ const DeputadoSchema = new mongoose.Schema({
     required: true
   },
   codOrcamento: {
-    type: String,
-    required: true
+    type: String
   },
   condicao: {
     type: String,
@@ -41,10 +40,12 @@ const DeputadoSchema = new mongoose.Schema({
   },
   uf: {
     type: String,
+    // TODO: enum com as siglas das unidades federativas - FIXO
     required: true
   },
   partido: {
     type: String,
+    // TODO: enum com as siglas dos partidos - VARIÁVEL
     required: true
   },
   gabinete: {

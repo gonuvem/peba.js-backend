@@ -9,6 +9,7 @@
     "fast-xml-parser": "^3.11.2",
     "foreman": "^3.0.1",
     "joi": "^13.4.0",
+    "mongoose": "^5.2.5",
     "request": "^2.87.0",
     "request-promise-any": "^1.0.5",
     "restify": "^7.2.1",
