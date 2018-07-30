@@ -1,30 +1,30 @@
 const fastXmlParser = require('fast-xml-parser');
 const {
-    recuperarDeputados,
+    getDeputadosIds, getTodosDeputados, getDespesasByDeputadoId, 
+    getDespesasTodosDeputados,
 } = require('../services/coletorService');
 
 describe('Testar Coletor Service', () => {
     
-    describe('Testar recuperarDeputados', () => {
-
-        let dados;
-
-        beforeAll(async () => {
-            dados = await recuperarDeputados();
-        });    
-
-        test('Executou sem erros', () => {
-            expect(dados).toBeDefined()
+    describe('Testar getDeputadosIds', () => {
+        
+        test('513 ids', () => {
+            return getDeputadosIds().then(ids => {
+                expect(ids).toHaveLength(513)
+            });
         });
 
-        test('É uma string', () => {
-            expect(typeof dados).toBe('string')
-        });
+    });
 
-        test('Os dados são do formato XML', () => {
-            const isXml = fastXmlParser.validate(dados);
-            expect(isXml).toBe(true)
-        });
+    describe('Testar getTodosDeputados', () => {
+
+    });
+
+    describe('Testar getDespesasByDeputadoId', () => {
+
+    });
+
+    describe('Testar getDespesasTodosDeputados', () => {
 
     });
     

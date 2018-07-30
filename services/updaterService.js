@@ -2,33 +2,40 @@ const Deputado = require('../models/DeputadoModel');
 
 /**
  * Cria, ou atualiza, as informações dos deputados de forma massiva.
- * @param {Object} data Objeto JSON convertido do XML que contém as informações
- * dos deputados.
+ * @param {Object} deputados Objeto JSON que contém as informações dos 
+ * deputados.
  */
-async function updateDeputados(data) {
+async function updateDeputados(deputados) {
+  const dados = deputados.map(d => d.dados);
   try {
-    const deputados = data.deputados.deputado;
-    const bulkOps = deputados.map(d => (
+    const bulkOps = dados.map(d => (
       { 
         updateOne: {
-          filter: { ideCadastro: d.ideCadastro },
+          filter: { idDeputado: d.ultimoStatus.id },
           update: {
-            ideCadastro: d.ideCadastro,
-            codOrcamento: d.codOrcamento,
-            condicao: d.condicao,
-            matricula: d.matricula,
-            idParlamentar: d.idParlamentar,
-            nome: d.nome,
-            nomeParlamentar: d.nomeParlamentar,
-            urlFoto: d.urlFoto,
-            sexo: d.sexo,
-            uf: d.uf,
-            partido: d.partido,
-            gabinete: d.gabinete,
-            anexo: d.anexo,
-            fone: d.fone,
-            email: d.email,
-            comissoes: d.comissoes
+            idDeputado            : d.ultimoStatus.id,
+            nomeCivil             : d.nomeCivil,
+            nome                  : d.ultimoStatus.nome,
+            siglaPartido          : d.ultimoStatus.siglaPartido,
+            uriPartido            : d.ultimoStatus.uriPartido,
+            siglaUf               : d.ultimoStatus.siglaUf,
+            idLegislatura         : d.ultimoStatus.idLegislatura,
+            urlFoto               : d.ultimoStatus.urlFoto,
+            data                  : d.ultimoStatus.data,
+            nomeEleitoral         : d.ultimoStatus.nomeEleitoral,
+            gabinete              : d.ultimoStatus.gabinete,
+            situacao              : d.ultimoStatus.situacao,
+            condicaoEleitoral     : d.ultimoStatus.condicaoEleitoral,
+            descricaoStatus       : d.ultimoStatus.descricaoStatus,
+            cpf                   : d.cpf,
+            sexo                  : d.sexo,
+            urlWebsite            : d.urlWebsite,
+            redeSocial            : d.redeSocial,
+            dataNascimento        : d.dataNascimento,
+            dataFalecimento       : d.dataFalecimento,
+            ufNascimento          : d.ufNascimento,
+            municipioNascimento   : d.municipioNascimento,
+            escolaridade          : d.escolaridade,
           },
           upsert: true
         }

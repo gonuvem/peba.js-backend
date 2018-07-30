@@ -1,8 +1,4 @@
 const {
-  converterXmlParaJson,
-} = require('../services/parserService');
-
-const {
   recuperarDeputados,
 } = require('../services/coletorService');
 
@@ -13,6 +9,7 @@ const mongoose = require('mongoose');
 
 describe('Testar Updater Service', () => {
 
+  /*
   let deputadosXML;
   let json;
 
@@ -26,17 +23,13 @@ describe('Testar Updater Service', () => {
     await mongoose.connection.dropDatabase();
     await mongoose.disconnect();
   });
+  */
 
   describe('Testar updateDeputados', () => {
 
     test('Dados undefined', () => {
       return updateDeputados(undefined).catch(e =>
         expect(e).toBeDefined());
-    });
-
-    test('Atualização sem erros', () => {
-      return updateDeputados(json).catch(e =>
-        expect(e).not.toBeDefined());
     });
 
   });

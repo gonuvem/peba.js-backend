@@ -1,77 +1,36 @@
 const mongoose = require('mongoose');
 
 const DeputadoSchema = new mongoose.Schema({
-  ideCadastro: {
-    type: String,
-    required: true
-  },
-  codOrcamento: {
-    type: String
-  },
-  condicao: {
-    type: String,
-    enum: ['Titular', 'Suplente'],
-    required: true
-  },
-  matricula: {
-    type: String,
-    required: true
-  },
-  idParlamentar: {
-    type: String,
-    required: true
-  },
-  nome: {
-    type: String,
-    required: true
-  },
-  nomeParlamentar: {
-    type: String,
-    required: true
-  },
-  urlFoto: {
-    type: String,
-    required: true
-  },
-  sexo: {
-    type: String,
-    enum: ['masculino', 'feminino'],
-    required: true
-  },
-  uf: {
-    type: String,
-    // TODO: enum com as siglas das unidades federativas - FIXO
-    required: true
-  },
-  partido: {
-    type: String,
-    // TODO: enum com as siglas dos partidos - VARIÁVEL
-    required: true
-  },
+  idDeputado            : { type: Number, required: true },
+  nomeCivil             : { type: String, required: true },
+  nome                  : { type: String, required: true },
+  siglaPartido          : { type: String, required: true },
+  uriPartido            : { type: String, required: true },
+  siglaUf               : { type: String, required: true },
+  idLegislatura         : { type: Number, required: true },
+  urlFoto               : { type: String, required: true },
+  data                  : { type: Date,   required: true },
+  nomeEleitoral         : { type: String, required: true },
   gabinete: {
-    type: String,
-    required: true
+    nome                : { type: String, required: true },
+    predio              : { type: String, required: true },
+    sala                : { type: String, required: true },
+    andar               : { type: String, required: true },
+    telefone            : { type: String, required: true },
+    email               : { type: String, required: true },
   },
-  anexo: {
-    type: String,
-    required: true
-  },
-  fone: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  comissoes: {
-    titular: {
-      type: String
-    },
-    suplente: {
-      type: String
-    }
-  }
+  situacao              : { type: String, required: true },
+  condicaoEleitoral     : { type: String, required: true },
+  descricaoStatus       : { type: String },
+  cpf                   : { type: String, required: true },
+  sexo                  : { type: String, required: true },
+  urlWebsite            : { type: String, required: true },
+  redeSocial            : [{ type: String, required: true }],
+  dataNascimento        : { type: Date,   required: true },
+  dataFalecimento       : { type: Date },
+  ufNascimento          : { type: String, required: true },
+  municipioNascimento   : { type: String, required: true },
+  escolaridade          : { type: String, required: true }
 }, { timestamps: true });
 
 const Deputado = mongoose.model('Deputado', DeputadoSchema);
