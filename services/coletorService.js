@@ -47,9 +47,8 @@ async function getDeputadoById(id) {
 async function getTodosDeputados(deputadosIds) {
   try {
     const concurrency = 20;
-    const res = await poolAll(deputadosIds.map(id => 
+    return await poolAll(deputadosIds.map(id => 
       () => getDeputadoById(id)), concurrency);
-    return res;
   } catch (err) {
     throw err;
   }
@@ -72,9 +71,8 @@ async function getDespesasByDeputadoId(id) {
 async function getDespesasTodosDeputados(deputadosIds) {
   try {
     const concurrency = 20;
-    const res = await poolAll(deputadosIds.map(id => 
+    return await poolAll(deputadosIds.map(id => 
       () => getDespesasByDeputadoId(id)), concurrency);
-    return res;
   } catch (error) {
     throw error;
   }
@@ -82,6 +80,7 @@ async function getDespesasTodosDeputados(deputadosIds) {
 
 module.exports = {
   getDeputadosIds,
+  getDeputadoById,
   getTodosDeputados,
   getDespesasByDeputadoId,
   getDespesasTodosDeputados,
