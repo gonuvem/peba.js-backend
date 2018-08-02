@@ -97,8 +97,25 @@ async function getSenadoresEmExercicio() {
  * Obtém os detalhes de um senador de acordo com o código.
  * @param {String} codigo Código do senador.
  */
-async function  getDetalhesSenador(codigo) {
+async function getDetalhesSenador(codigo) {
   return await rp({ url: `${senadoAPI}/senador/${codigo}`, json: true });
+}
+
+/**
+ * Obtém os detalhes de todos os senadores de acordo com os codigos.
+ * As requisições são feitas paralelamente, respeitando um limite de 
+ * concorrência.
+ * @param {[String]} codigos Array de strings de códigos de senadores.
+ * @param {Number} concurrency Inteiro que limita a quantidade de requisições
+ * paralelas.
+ */
+async function getDetalhesTodosSenadores(codigos, concurrency=20) {
+  try {
+    return await poolAll(codigos.map(codigo => 
+      () => getDetalhesSenador(codigo)), concurrency);
+  } catch (error) {
+    throw error;
+  }
 }
 
 module.exports = {
@@ -109,4 +126,5 @@ module.exports = {
   getDespesasTodosDeputados,
   getSenadoresEmExercicio,
   getDetalhesSenador,
+  getDetalhesTodosSenadores,
 }

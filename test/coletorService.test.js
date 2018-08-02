@@ -1,7 +1,7 @@
 const {
   getDeputadosIds, getDeputadoById, getTodosDeputados,
   getDespesasByDeputadoId, getDespesasTodosDeputados,
-  getSenadoresEmExercicio, getDetalhesSenador
+  getSenadoresEmExercicio, getDetalhesSenador, getDetalhesTodosSenadores,
 } = require('../services/coletorService');
 
 const deputado = {
@@ -15,6 +15,8 @@ const senador = {
   NomeParlamentar: "Acir Gurgacz",
   NomeCompletoParlamentar: "Acir Marcos Gurgacz",
 }
+
+const codSenadores = ['5322', '3695', '5000'];
 
 describe('Testar Coletor Service', () => {
 
@@ -125,6 +127,22 @@ describe('Testar Coletor Service', () => {
         const detalhes = 
         response.DetalheParlamentar.Parlamentar.IdentificacaoParlamentar;
         expect(detalhes).toMatchObject(senador)
+      });
+    });
+
+  });
+
+  describe('Testar getDetalhesTodosSenadores', () => {
+
+    test('Codigos vazios - Lista vazia', () => {
+      return getDetalhesTodosSenadores([]).then(response => {
+        expect(response).toEqual([])
+      });
+    });
+
+    test('3 codigos - 3 senadores', () => {
+      return getDetalhesTodosSenadores(codSenadores).then(detalhes => {
+        expect(detalhes).toHaveLength(3)
       });
     });
 
