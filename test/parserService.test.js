@@ -7,14 +7,22 @@ const {
   recuperarDeputados,
 } = require('../services/coletorService');
 
+const sampleXml = `
+<dados>
+    <deputado_>
+      <id>178957</id>
+      <uri>https://dadosabertos.camara.leg.br/api/v2/deputados/178957</uri>
+      <nome>ABEL MESQUITA JR.</nome>
+      <siglaPartido>DEM</siglaPartido>
+      <uriPartido>https://dadosabertos.camara.leg.br/api/v2/partidos/36769</uriPartido>
+      <siglaUf>RR</siglaUf>
+      <idLegislatura>55</idLegislatura>
+      <urlFoto>http://www.camara.leg.br/internet/deputado/bandep/178957.jpg</urlFoto>
+    </deputado_>
+</dados>    
+`;
 
 describe('Testar Parser Service', () => {
-
-  let deputadosXML;
-
-  beforeAll(async () => {
-    deputadosXML = await recuperarDeputados();
-  });
 
   describe('Testar validarXml', () => {    
 
@@ -28,8 +36,8 @@ describe('Testar Parser Service', () => {
         expect(e).toEqual(new Error('Não é um arquivo XML')));
     });
 
-    test('Arquivo baixado', () => {
-      return validarXml(deputadosXML).then(response =>
+    test('Arquivo é um xml', () => {
+      return validarXml(sampleXml).then(response =>
         expect(response).toBe(true));
     });
 
@@ -47,10 +55,16 @@ describe('Testar Parser Service', () => {
         expect(e).toEqual(new Error('Não é um arquivo XML')))
     });
 
-    test('Arquivo convertido', async () => {
-      const json = await converterXmlParaJson(deputadosXML);
-      expect(typeof json).toBe('object')  
-      
+    test('Conversão bem sucedida', () => {
+      return converterXmlParaJson(sampleXml).then(response =>
+        expect(response).toMatchObject({
+          dados: {
+            deputado_: {
+              id: 178957,
+              nome: 'ABEL MESQUITA JR.'
+            }
+          }
+        }));
     });
 
   });
