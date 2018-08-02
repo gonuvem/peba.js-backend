@@ -11,7 +11,7 @@ describe('Testar Coletor Service', () => {
 
         beforeAll(async () => {
             dados = await recuperarDeputados();
-        }, 10000);    
+        });    
 
         test('Executou sem erros', () => {
             expect(dados).toBeDefined()
