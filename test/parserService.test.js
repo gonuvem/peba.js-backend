@@ -1,5 +1,6 @@
 const {
   validarXml, converterXmlParaJson, getDeputadosIds, getSenadoresCodigos,
+  gerarPoliticosDeDeputados, gerarPoliticosDeSenadores,
 } = require('../services/parserService');
 
 const {
@@ -85,6 +86,26 @@ describe('Testar Parser Service', () => {
     test('São 81 senadores, logo 81 códigos', () => {
       return getSenadoresCodigos(senadoresEmExercicio).then(response => {
         expect(response).toHaveLength(81)
+      });
+    });
+
+  });
+
+  describe('Testar gerarPoliticosDeDeputados', () => {
+
+    test('Dados undefined', () => {
+      return gerarPoliticosDeDeputados(undefined).catch(error => {
+        expect(error).toBeDefined()
+      });
+    });
+
+  });
+
+  describe('Testar gerarPoliticosDeSenadores', () => {
+
+    test('Dados undefined', () => {
+      return gerarPoliticosDeSenadores(undefined).catch(error => {
+        expect(error).toBeDefined()
       });
     });
 

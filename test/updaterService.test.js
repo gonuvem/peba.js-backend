@@ -21,6 +21,7 @@ describe('Testar Updater Service', () => {
   let deputados = [];
   
   beforeAll(async () => {
+    // TODO: Utilizar factories
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
     let l = await getSenadoresEmExercicio();
@@ -50,8 +51,8 @@ describe('Testar Updater Service', () => {
 
     test('Inserir 6 politicos - 3 senadores e 3 deputados', () => {
       return updatePoliticos(senadores.concat(deputados)).then( async () => {
-        const totalDeputados = await Politico.countDocuments();
-        expect(totalDeputados).toBe(6)
+        const totalPoliticos = await Politico.countDocuments();
+        expect(totalPoliticos).toBe(6)
       });
     });
 

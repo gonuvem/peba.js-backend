@@ -55,7 +55,6 @@ describe('Testar Coletor Service', () => {
 
   });
 
-
   describe('Testar getTodosDeputados', () => {
 
     test('Sem ids, lista de deputados vazia', () => {
