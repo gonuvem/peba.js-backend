@@ -23,7 +23,34 @@ async function converterXmlParaJson(dadosXml) {
   }
 }
 
+/**
+ * Obtém da resposta da função getDeputadosLista uma lista de ids de deputados
+ * que será utilizida em outras requisições à API da Câmara.
+ * @param {[Object]} deputadosLista Array de respostas em JSON proveniente da
+ * função getDeputadosLista.
+ */
+async function getDeputadosIds(deputadosLista) {
+  return [].concat(
+    ...deputadosLista.map(resp => resp.dados.map(dep => dep.id)));
+}
+
+/**
+ * Obtém da resposta da função getSenadoresEmExercicio uma lista de códigos de
+ * senadores que será utilizada em outras requisições à API do Senado.
+ * @param {Object} senadoresEmExercicio JSON de resposta da função 
+ * getSenadoresEmExercicio.
+ */
+async function getSenadoresCodigos(senadoresEmExercicio) {
+  const senadoresLista = 
+  senadoresEmExercicio.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+
+  return senadoresLista.map(sen =>
+    sen.IdentificacaoParlamentar.CodigoParlamentar);
+}
+
 module.exports = {
   converterXmlParaJson,
-  validarXml
+  validarXml,
+  getDeputadosIds,
+  getSenadoresCodigos,
 }

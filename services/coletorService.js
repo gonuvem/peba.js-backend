@@ -16,22 +16,22 @@ const camaraAPI = 'https://dadosabertos.camara.leg.br/api/v2';
 const senadoAPI = 'http://legis.senado.leg.br/dadosabertos';
 
 /**
- * Obtém os ids de todos os 513 deputados federais. Cada requisição devolve
- * uma qtd de páginas e um link para a próxima requisição.
+ * Obtém uma lista de todos os 513 deputados federais. Cada requisição devolve
+ * uma qtd de itens e um link para a próxima requisição.
  * @param {Number} qtd Inteiro que limita a quantidade de itens por página.
  * Máximo: 100.
  */
-async function getDeputadosIds(qtd=100) {
+async function getDeputadosLista(qtd=100) {
   let next = { href: `${camaraAPI}/deputados?pagina=1&itens=${qtd}` };
-  let deputadosIds = [];
+  let deputadosLista = [];
   let res;
   try {
     while(next) {
       res = await rp({ url: next.href, json: true });
-      deputadosIds = deputadosIds.concat(res.dados.map(d => d.id));
       next = res.links.find(l => l.rel === 'next');
+      deputadosLista.push(res);
     }
-    return deputadosIds; 
+    return deputadosLista; 
   } catch (error) {
     throw error;
   }
@@ -117,7 +117,7 @@ async function getDetalhesTodosSenadores(codigos, concurrency=20) {
 }
 
 module.exports = {
-  getDeputadosIds,
+  getDeputadosLista,
   getDeputadoById,
   getTodosDeputados,
   getDespesasByDeputadoId,

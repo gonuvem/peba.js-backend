@@ -1,10 +1,9 @@
 const {
-  validarXml,
-  converterXmlParaJson,
+  validarXml, converterXmlParaJson, getDeputadosIds, getSenadoresCodigos,
 } = require('../services/parserService');
 
 const {
-  recuperarDeputados,
+  getDeputadosLista, getSenadoresEmExercicio
 } = require('../services/coletorService');
 
 const sampleXml = `
@@ -65,6 +64,28 @@ describe('Testar Parser Service', () => {
             }
           }
         }));
+    });
+
+  });
+
+  describe('Testar getDeputadosIds', async () => {
+
+    const deputadosLista = await getDeputadosLista();
+    test('São 513 deputados, logo 513 códigos', () => {
+      return getDeputadosIds(deputadosLista).then(response => {
+        expect(response).toHaveLength(513)
+      });
+    });
+
+  });
+
+  describe('Testar getSenadoresCodigos', async () => {
+
+    const senadoresEmExercicio = await getSenadoresEmExercicio();
+    test('São 81 senadores, logo 81 códigos', () => {
+      return getSenadoresCodigos(senadoresEmExercicio).then(response => {
+        expect(response).toHaveLength(81)
+      });
     });
 
   });

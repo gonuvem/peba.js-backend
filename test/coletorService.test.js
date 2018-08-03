@@ -1,5 +1,5 @@
 const {
-  getDeputadosIds, getDeputadoById, getTodosDeputados,
+  getDeputadosLista, getDeputadoById, getTodosDeputados,
   getDespesasByDeputadoId, getDespesasTodosDeputados,
   getSenadoresEmExercicio, getDetalhesSenador, getDetalhesTodosSenadores,
 } = require('../services/coletorService');
@@ -25,7 +25,7 @@ describe('Testar Coletor Service', () => {
     deputadosIds = await getDeputadosIds();
   });
 
-  describe('Testar getDeputadosIds', () => {
+  describe('Testar getDeputadosLista', () => {
 
     test('É um array', () => {
       expect(deputadosIds).toBeInstanceOf(Array)
