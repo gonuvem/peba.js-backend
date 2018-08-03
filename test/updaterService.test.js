@@ -1,4 +1,3 @@
-const Deputado = require('../models/DeputadoModel');
 const Politico = require('../models/PoliticoModel');
 
 const {
@@ -29,6 +28,10 @@ describe('Testar Updater Service', () => {
     senadores = await getDetalhesTodosSenadores(codSenadores);
   });
 
+  beforeEach(async () => {
+    await Politico.remove({});
+  });
+
   afterAll(async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.disconnect();
@@ -43,7 +46,7 @@ describe('Testar Updater Service', () => {
 
     test('Inserir 3 deputados', () => {
       return updateDeputados(deputados).then( async () => {
-        const totalDeputados = await Deputado.countDocuments();
+        const totalDeputados = await Politico.countDocuments();
         expect(totalDeputados).toBe(3)
       });
     });
