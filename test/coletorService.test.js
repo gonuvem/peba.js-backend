@@ -4,6 +4,10 @@ const {
   getSenadoresEmExercicio, getDetalhesSenador, getDetalhesTodosSenadores,
 } = require('../services/coletorService');
 
+const {
+  getDeputadosIds, getSenadoresCodigos
+} = require('../services/parserService');
+
 const deputado = {
   id: 178957,
   dataNascimento: '1962-03-29',
@@ -20,19 +24,17 @@ const codSenadores = ['5322', '3695', '5000'];
 
 describe('Testar Coletor Service', () => {
 
+  let deputadosLista;
   let deputadosIds;
   beforeAll(async () => {
-    deputadosIds = await getDeputadosIds();
+    deputadosLista = await getDeputadosLista();
+    deputadosIds = await getDeputadosIds(deputadosLista);
   });
 
   describe('Testar getDeputadosLista', () => {
 
     test('É um array', () => {
-      expect(deputadosIds).toBeInstanceOf(Array)
-    });
-
-    test('Tem 513 ids', () => {
-      expect(deputadosIds).toHaveLength(513)
+      expect(deputadosLista).toBeInstanceOf(Array)
     });
 
   });
@@ -106,9 +108,8 @@ describe('Testar Coletor Service', () => {
   describe('Testar getSenadoresEmExercicio', () => {
 
     test('São 81 senadores em exercício', () => {
-      return getSenadoresEmExercicio().then(response => {
-        const senadores = 
-        response.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+      return getSenadoresEmExercicio().then( async response => {
+        const senadores = await getSenadoresCodigos(response);
         expect(senadores).toHaveLength(81)
       });
     });

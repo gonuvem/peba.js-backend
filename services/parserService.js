@@ -1,4 +1,5 @@
 const fastXmlParser = require('fast-xml-parser');
+const { toTitleCase, montarEndereco } = require('../utils/utils');
 
 /**
  * Validar um arquivo xml.
@@ -48,9 +49,61 @@ async function getSenadoresCodigos(senadoresEmExercicio) {
     sen.IdentificacaoParlamentar.CodigoParlamentar);
 }
 
+/**
+ * Gera uma lista de objetos Politico a partir das informações de deputados.
+ * Extrai da resposta da função getTodosDeputados uma lista de políticos que
+ * será inserida/atualizada no BD.
+ * @param {[Object]} deputados JSON de resposta da função 
+ * getTodosDeputados.
+ */
+async function gerarPoliticosDeDeputados(deputados) {
+  return deputados.map(dep => dep.dados).map(d => ({
+    codigo                : d.ultimoStatus.id.toString(),
+    nome                  : toTitleCase(d.ultimoStatus.nome),
+    urlFoto               : d.ultimoStatus.urlFoto,
+    siglaPartido          : d.ultimoStatus.siglaPartido,
+    siglaUf               : d.ultimoStatus.siglaUf,
+    descricaoStatus       : d.ultimoStatus.condicaoEleitoral,
+    endereco              : montarEndereco(d.ultimoStatus.gabinete),
+    email                 : d.ultimoStatus.gabinete.email.toLowerCase(),
+    telefone              : d.ultimoStatus.gabinete.telefone,
+    nomeCivil             : toTitleCase(d.nomeCivil),
+    sexo                  : d.sexo,
+    dataNascimento        : d.dataNascimento,
+    siglaUfNascimento     : d.ufNascimento,
+  }));
+}
+
+/**
+ * Gera uma lista de objetos Politico a partir das informações de senadores.
+ * Extrai da resposta da função getDetalhesTodosSenadores uma lista de 
+ * políticos que será inserida/atualizada no BD.
+ * @param {[Object]} senadores JSON de resposta da função 
+ * getDetalhesTodosSenadores.
+ */
+async function gerarPoliticosDeSenadores(senadores) {
+  return senadores.map(sen => sen.DetalheParlamentar.Parlamentar).map(s => ({
+    codigo            : s.IdentificacaoParlamentar.CodigoParlamentar,
+    nome              : s.IdentificacaoParlamentar.NomeParlamentar,
+    urlFoto           : s.IdentificacaoParlamentar.UrlFotoParlamentar,
+    siglaPartido      : s.IdentificacaoParlamentar.SiglaPartidoParlamentar,
+    siglaUf           : s.IdentificacaoParlamentar.UfParlamentar,
+    descricaoStatus   : s.MandatoAtual.DescricaoParticipacao,
+    endereco          : s.DadosBasicosParlamentar.EnderecoParlamentar,
+    email             : s.IdentificacaoParlamentar.EmailParlamentar,
+    telefone          : s.DadosBasicosParlamentar.TelefoneParlamentar,
+    nomeCivil         : s.IdentificacaoParlamentar.NomeCompletoParlamentar,
+    sexo              : s.IdentificacaoParlamentar.SexoParlamentar[0],
+    dataNascimento    : s.DadosBasicosParlamentar.DataNascimento,
+    siglaUfNascimento : s.DadosBasicosParlamentar.UfNaturalidade,
+  }));
+}
+
 module.exports = {
   converterXmlParaJson,
   validarXml,
   getDeputadosIds,
   getSenadoresCodigos,
+  gerarPoliticosDeDeputados,
+  gerarPoliticosDeSenadores
 }
