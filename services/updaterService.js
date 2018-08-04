@@ -1,9 +1,10 @@
 const Deputado = require('../models/DeputadoModel');
+const Politico = require('../models/PoliticoModel');
 
 /**
  * Cria, ou atualiza, as informações dos deputados de forma massiva.
- * @param {Object} deputados Objeto JSON que contém as informações dos 
- * deputados.
+ * @param {[Object]} deputados Array de Objeto JSON que contém as informações
+ * dos deputados adquiridas do endpoint de detalhes da API da Câmara.
  */
 async function updateDeputados(deputados) {
   const dados = deputados.map(d => d.dados);
@@ -47,6 +48,46 @@ async function updateDeputados(deputados) {
   }
 }
 
+/**
+ * Cria, ou atualiza, as informações dos senadores de forma massiva.
+ * @param {[Object]} senadores Array de Objeto JSON que contém as informações
+ * dos senadores adquiridas do endpoint de detalhes da API do Senado.
+ */
+async function updateSenadores(senadores) {
+  try {
+    // Criar as operações de bulk de updateOne para cada senador
+    const bulkOps = senadores.map(s => s.DetalheParlamentar.Parlamentar)
+    .map(s => (
+      {
+        updateOne: {
+          filter: { codigo: s.IdentificacaoParlamentar.CodigoParlamentar },
+          update: {
+            codigo            : s.IdentificacaoParlamentar.CodigoParlamentar,
+            nome              : s.IdentificacaoParlamentar.NomeParlamentar,
+            urlFoto           : s.IdentificacaoParlamentar.UrlFotoParlamentar,
+            siglaPartido      : s.IdentificacaoParlamentar.SiglaPartidoParlamentar,
+            siglaUf           : s.IdentificacaoParlamentar.UfParlamentar,
+            descricaoStatus   : s.MandatoAtual.DescricaoParticipacao,
+            endereco          : s.DadosBasicosParlamentar.EnderecoParlamentar,
+            email             : s.IdentificacaoParlamentar.EmailParlamentar,
+            telefone          : s.DadosBasicosParlamentar.TelefoneParlamentar,
+            nomeCivil         : s.IdentificacaoParlamentar.NomeCompletoParlamentar,
+            sexo              : s.IdentificacaoParlamentar.SexoParlamentar,
+            dataNascimento    : s.DadosBasicosParlamentar.DataNascimento,
+            siglaUfNascimento : s.DadosBasicosParlamentar.UfNaturalidade,
+          },
+          upsert: true
+        }
+      }
+    ));
+    // Realiza a operação de bulk atualizando os senadores em uma operação
+    await Politico.bulkWrite(bulkOps);
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
-  updateDeputados
+  updateDeputados,
+  updateSenadores,
 }

@@ -1,22 +1,32 @@
 const Deputado = require('../models/DeputadoModel');
+const Politico = require('../models/PoliticoModel');
 
 const {
-  getDeputadosIds, getTodosDeputados,
+  getDeputadosIds, getTodosDeputados, getSenadoresEmExercicio,
+  getDetalhesTodosSenadores
 } = require('../services/coletorService');
 
 const {
-  updateDeputados
+  updateDeputados, updateSenadores
 } = require('../services/updaterService');
 const mongoose = require('mongoose');
 
 describe('Testar Updater Service', () => {
 
   let deputadosIds;
+  let deputados;
+  let senadores;
   
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
     deputadosIds = await getDeputadosIds();
     deputados = await getTodosDeputados(deputadosIds.slice(0,3));
+    const senResp = await getSenadoresEmExercicio();
+    const senLista = 
+    senResp.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+    const codSenadores = 
+    senLista.map(sen => sen.IdentificacaoParlamentar.CodigoParlamentar);
+    senadores = await getDetalhesTodosSenadores(codSenadores);
   });
 
   afterAll(async () => {
@@ -38,6 +48,22 @@ describe('Testar Updater Service', () => {
       });
     });
 
+  });
+
+  describe('Testar updateSenadores', () => {
+    
+    test('Dados undefined', () => {
+      return updateSenadores(undefined).catch(error =>
+        expect(error).toBeDefined());
+    });
+
+    test('Inserir 3 senadores', () => {
+      return updateSenadores(senadores.slice(0,3)).then( async () => {
+        const totalSenadores = await Politico.countDocuments();
+        expect(totalSenadores).toBe(3)
+      });
+    });
+    
   });
 
 });
