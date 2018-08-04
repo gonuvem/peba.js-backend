@@ -51,9 +51,8 @@ async function getDeputadoById(id) {
  * @param {[Number]} deputadosIds Lista de Ids dos deputados a serem 
  * pesquisados.
  */
-async function getTodosDeputados(deputadosIds) {
+async function getTodosDeputados(deputadosIds, concurrency=20) {
   try {
-    const concurrency = 20;
     return await poolAll(deputadosIds.map(id => 
       () => getDeputadoById(id)), concurrency);
   } catch (err) {
@@ -76,9 +75,8 @@ async function getDespesasByDeputadoId(id) {
  * @param {[Number]} deputadosIds Lista de Ids dos deputados cujas despesas
  * serão pesquisadas.
  */
-async function getDespesasTodosDeputados(deputadosIds) {
+async function getDespesasTodosDeputados(deputadosIds, concurrency=20) {
   try {
-    const concurrency = 20;
     return await poolAll(deputadosIds.map(id => 
       () => getDespesasByDeputadoId(id)), concurrency);
   } catch (error) {

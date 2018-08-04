@@ -1,5 +1,5 @@
-const Deputado = require('../models/DeputadoModel');
 const Politico = require('../models/PoliticoModel');
+const { toTitleCase, montarEndereco } = require('../utils/utils');
 
 /**
  * Cria, ou atualiza, as informações dos deputados de forma massiva.
@@ -12,37 +12,27 @@ async function updateDeputados(deputados) {
     const bulkOps = dados.map(d => (
       { 
         updateOne: {
-          filter: { idDeputado: d.ultimoStatus.id },
+          filter: { codigo: d.ultimoStatus.id },
           update: {
-            idDeputado            : d.ultimoStatus.id,
-            nomeCivil             : d.nomeCivil,
-            nome                  : d.ultimoStatus.nome,
+            codigo                : d.ultimoStatus.id,
+            nomeCivil             : toTitleCase(d.nomeCivil),
+            nome                  : toTitleCase(d.ultimoStatus.nome),
             siglaPartido          : d.ultimoStatus.siglaPartido,
-            uriPartido            : d.ultimoStatus.uriPartido,
             siglaUf               : d.ultimoStatus.siglaUf,
-            idLegislatura         : d.ultimoStatus.idLegislatura,
             urlFoto               : d.ultimoStatus.urlFoto,
-            data                  : d.ultimoStatus.data,
-            nomeEleitoral         : d.ultimoStatus.nomeEleitoral,
-            gabinete              : d.ultimoStatus.gabinete,
-            situacao              : d.ultimoStatus.situacao,
-            condicaoEleitoral     : d.ultimoStatus.condicaoEleitoral,
-            descricaoStatus       : d.ultimoStatus.descricaoStatus,
-            cpf                   : d.cpf,
+            email                 : d.ultimoStatus.gabinete.email.toLowerCase(),
+            telefone              : d.ultimoStatus.gabinete.telefone,
+            descricaoStatus       : d.ultimoStatus.condicaoEleitoral,
             sexo                  : d.sexo,
-            urlWebsite            : d.urlWebsite,
-            redeSocial            : d.redeSocial,
             dataNascimento        : d.dataNascimento,
-            dataFalecimento       : d.dataFalecimento,
-            ufNascimento          : d.ufNascimento,
-            municipioNascimento   : d.municipioNascimento,
-            escolaridade          : d.escolaridade,
+            siglaUfNascimento     : d.ufNascimento,
+            endereco              : montarEndereco(d.ultimoStatus.gabinete)
           },
           upsert: true
         }
       }
     ));
-    await Deputado.bulkWrite(bulkOps);
+    await Politico.bulkWrite(bulkOps);
   } catch (error) {
     throw error;
   }
@@ -72,7 +62,7 @@ async function updateSenadores(senadores) {
             email             : s.IdentificacaoParlamentar.EmailParlamentar,
             telefone          : s.DadosBasicosParlamentar.TelefoneParlamentar,
             nomeCivil         : s.IdentificacaoParlamentar.NomeCompletoParlamentar,
-            sexo              : s.IdentificacaoParlamentar.SexoParlamentar,
+            sexo              : s.IdentificacaoParlamentar.SexoParlamentar[0],
             dataNascimento    : s.DadosBasicosParlamentar.DataNascimento,
             siglaUfNascimento : s.DadosBasicosParlamentar.UfNaturalidade,
           },
