@@ -2,7 +2,7 @@ const Politico = require('../models/PoliticoModel');
 
 const {
   getDeputadosLista, getTodosDeputados,
-  getSenadoresEmExercicio, getDetalhesTodosSenadores
+  getSenadoresLegislatura, getDetalhesTodosSenadores
 } = require('../services/coletorService');
 
 const {
@@ -24,7 +24,7 @@ describe('Testar Updater Service', () => {
     // TODO: Utilizar factories
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
-    let l = await getSenadoresEmExercicio();
+    let l = await getSenadoresLegislatura();
     let i = await getSenadoresCodigos(l);
     let d = await getDetalhesTodosSenadores(i.slice(0,3));
     let p = await gerarPoliticosDeSenadores(d);
