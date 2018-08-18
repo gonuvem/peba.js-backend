@@ -17,8 +17,8 @@ const Politico = require('../models/PoliticoModel');
 const timezone = 'America/Fortaleza';
 
 /**
- * Cria um cron job que atualiza o status dos boletos gerados pelo 
- * generateTicketsJob. O cron job executa toda segunda-feira (1 no cronTime) às
+ * Cria um cron job que atualiza os políticos e seus totais de despesas.
+ * O cron job executa toda segunda-feira (1 no cronTime) às
  * 2h da manhã (00 00 02 no cronTime), considerando a hora do fuso horário 
  * America/Fortaleza.
  */
@@ -62,7 +62,7 @@ async function atualizarDeputados() {
 
   // Obter detalhes dos deputados com os ids
   console.log(`Obtendo detalhes de ${deputadosIds.length} deputados...`);
-  const deputados = await getTodosDeputados(deputadosIds.slice(0,3));
+  const deputados = await getTodosDeputados(deputadosIds);
 
   // Criar objetos políticos com detalhes dos deputados
   console.log('Gerando políticos de deputados...');
@@ -85,7 +85,7 @@ async function atualizarSenadores() {
 
   // Obter detalhes dos senadores com os ids
   console.log(`Obtendo detalhes de ${senadoresCodigos.length} senadores...`);
-  const senadores = await getDetalhesTodosSenadores(senadoresCodigos.slice(0,3));
+  const senadores = await getDetalhesTodosSenadores(senadoresCodigos);
 
   // Criar objetos políticos com detalhes dos senadores
   console.log('Gerando políticos de senadores...');
@@ -104,7 +104,7 @@ async function atualizarTotalDespesasDeputados() {
 
   // Obter despesas dos deputados
   console.log('Obtendo despesas de deputados...');
-  const despesasReq = await getTodasDespesasTodosDeputados(codDeputados.slice(0,3));
+  const despesasReq = await getTodasDespesasTodosDeputados(codDeputados);
 
   // Parsear despesas
   console.log('Parsear despesas de deputados...');
