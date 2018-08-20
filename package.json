@@ -9,7 +9,7 @@
     "cron": "^1.4.0",
     "fast-xml-parser": "^3.11.2",
     "foreman": "^3.0.1",
-    "joi": "^13.4.0",
+    "joi": "^13.6.0",
     "mongoose": "^5.2.5",
     "papaparse": "^4.6.0",
     "request": "^2.87.0",
