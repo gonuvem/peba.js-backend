@@ -32,8 +32,14 @@ exports.validateRequest = async function (req, res, next) {
     // Obter caminho da requisição
     const path = req.getRoute().path;
 
-    // Obter schema correspondente ao caminho
-    const schema = schemas[path];
+    // Obter método
+    const method = req.method;
+
+    // Montar nome do esquema
+    const name = `${ method } ${ path }`;
+    
+    // Obter schema correspondente ao nome
+    const schema = schemas[name];
 
     // Criar objeto que será validado
     const data = { 
