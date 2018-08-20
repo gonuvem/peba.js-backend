@@ -29,8 +29,29 @@ exports.getById = async function (req, res, next) {
     const politician = await Politico.findById(id, politicoDetailProj);
     if(!politician) throw new errs.NotFoundError('Político não encontrado');
 
-    // Retorna o político não encontrado
+    // Retorna o político encontrado
     return res.send(politician);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.searchByTerms = async function (req, res, next) {
+  try {
+    // Obter array de termos
+    const terms = req.body.terms;
+    
+    // Concatenar termos em uma query
+    const query = terms.join(' ');
+
+    // Obter políticos que correspondem à query
+    const politicians = await Politico
+    .find({ $text : { $search : query } }, { score : { $meta: "textScore" } })
+    .select(politicoListProj)
+    .sort({ score : { $meta : 'textScore' } });
+
+    // Retornar políticos encontrados
+    return res.send(politicians);
   } catch (error) {
     next(error);
   }
