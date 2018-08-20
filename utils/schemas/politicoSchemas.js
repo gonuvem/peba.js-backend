@@ -1,13 +1,20 @@
 const Joi = require('joi');
-const { uf } = require('./baseSchemas');
+const { ufSchema, idSchema } = require('./baseSchemas');
 
 const searchByUf = Joi.object().keys({
+  query: {
+    uf: ufSchema.required()
+  }
+});
+
+const getById = Joi.object().keys({
   params: {
-    uf: uf.required()
+    id: idSchema.required()
   }
 });
 
 
 module.exports = {
-  searchByUf
+  searchByUf,
+  getById,
 }
