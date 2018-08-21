@@ -6,15 +6,21 @@ const errs = require('restify-errors');
 
 exports.searchByUf = async function (req, res, next) {
   try {
-    // Obter sigla Uf a ser pesquisada
-    const uf = req.query.uf;
+    // Obter sigla Uf, a página e a quantidade resultados por página
+    const { uf, page = 0, perPage = 5 } = req.query;
 
-    // Obter políticos dessa Uf
-    const politicians = await Politico
-    .find({ siglaUf: uf }, politicoListProj).sort('nome');
+    // Obter o total de políticos dessa Uf e a página requisitada
+    const [ total, politicians ] = await Promise.all([
+      Politico.find({ siglaUf: uf }).countDocuments(),
+      Politico.find({ siglaUf: uf }, politicoListProj).sort('nome')
+      .paginate(page, perPage)
+    ]);
+
+    // Calcular quantas páginas existem
+    const pages = Math.ceil(total / perPage);
     
-    // Retornar os políticos encontrados
-    return res.send(politicians);
+    // Retornar os políticos encontrados e os dados da paginação
+    return res.send({ politicians: politicians, total: total, pages: pages });
   } catch (error) {
     next(error);
   }
@@ -39,19 +45,23 @@ exports.getById = async function (req, res, next) {
 exports.searchByTerms = async function (req, res, next) {
   try {
     // Obter array de termos
-    const terms = req.body.terms;
+    const { terms, page = 0, perPage = 5 } = req.body;
     
     // Concatenar termos em uma query
     const query = terms.join(' ');
 
     // Obter políticos que correspondem à query
-    const politicians = await Politico
-    .find({ $text : { $search : query } }, { score : { $meta: "textScore" } })
-    .select(politicoListProj)
-    .sort({ score : { $meta : 'textScore' } });
+    const [ total, politicians ] = await Promise.all([
+      Politico.find({ $text : { $search : query } }).countDocuments(),
+      Politico.fullTextSearch(query).select(politicoListProj)
+      .paginate(page, perPage)
+    ]);
 
-    // Retornar políticos encontrados
-    return res.send(politicians);
+    // Calcular quantas páginas existem
+    const pages = Math.ceil(total / perPage);
+
+    // Retornar políticos encontrados e os dados da paginação
+    return res.send({ politicians: politicians, total: total, pages: pages });
   } catch (error) {
     next(error);
   }

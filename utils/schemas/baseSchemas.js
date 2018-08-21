@@ -5,4 +5,6 @@ module.exports = {
   ufSchema: Joi.string().length(2).uppercase().strict(),
   termsSchema: Joi.array().min(1).items(Joi.string().strict().required()),
   emailSchema: Joi.string().email(),
+  pageSchema: Joi.number().integer().min(0),
+  perPageSchema: Joi.number().integer().min(1),
 }
