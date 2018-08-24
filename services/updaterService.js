@@ -8,9 +8,35 @@ const { toTitleCase, montarEndereco } = require('../utils/utils');
  */
 async function updatePoliticos(politicos) {
   try {
-    await Politico.bulkWrite(politicos.map(p => ({
+    const resultado = await Politico.bulkWrite(politicos.map(p => ({
       updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
     })));
+    console.log(resultado)
+    return resultado.upsertedCount;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateTotalDespesas(politicos) {
+  try {
+    const resultado = await Politico.bulkWrite(politicos.map(p => ({
+      updateOne: { filter: { nome: p.nome }, update: p, upsert: true }
+    })));
+    console.log(resultado)
+    return resultado.upsertedCount;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateTotalDespesasDeputados(politicos) {
+  try {
+    const resultado = await Politico.bulkWrite(politicos.map(p => ({
+      updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
+    })));
+    console.log(resultado)
+    return resultado.upsertedCount;
   } catch (error) {
     throw error;
   }
@@ -18,4 +44,6 @@ async function updatePoliticos(politicos) {
 
 module.exports = {
   updatePoliticos,
+  updateTotalDespesas,
+  updateTotalDespesasDeputados
 }

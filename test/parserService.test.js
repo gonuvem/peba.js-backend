@@ -4,7 +4,7 @@ const {
 } = require('../services/parserService');
 
 const {
-  getDeputadosLista, getSenadoresEmExercicio
+  getDeputadosLista, getSenadoresLegislatura
 } = require('../services/coletorService');
 
 const sampleXml = `
@@ -82,10 +82,11 @@ describe('Testar Parser Service', () => {
 
   describe('Testar getSenadoresCodigos', async () => {
 
-    const senadoresEmExercicio = await getSenadoresEmExercicio();
-    test('São 81 senadores, logo 81 códigos', () => {
-      return getSenadoresCodigos(senadoresEmExercicio).then(response => {
-        expect(response).toHaveLength(81)
+    const senadoresLegislatura = await getSenadoresLegislatura();
+    test('São 81 senadores em exercício, logo deve haver pelo menos 81 códigos'
+    , () => {
+      return getSenadoresCodigos(senadoresLegislatura).then(response => {
+        expect(response.length).toBeGreaterThanOrEqual(81)
       });
     });
 

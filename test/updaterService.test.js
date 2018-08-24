@@ -2,7 +2,7 @@ const Politico = require('../models/PoliticoModel');
 
 const {
   getDeputadosLista, getTodosDeputados,
-  getSenadoresEmExercicio, getDetalhesTodosSenadores
+  getSenadoresLegislatura, getDetalhesTodosSenadores
 } = require('../services/coletorService');
 
 const {
@@ -19,12 +19,12 @@ describe('Testar Updater Service', () => {
 
   let senadores = [];
   let deputados = [];
-  
+
   beforeAll(async () => {
     // TODO: Utilizar factories
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
-    let l = await getSenadoresEmExercicio();
+    let l = await getSenadoresLegislatura();
     let i = await getSenadoresCodigos(l);
     let d = await getDetalhesTodosSenadores(i.slice(0,3));
     let p = await gerarPoliticosDeSenadores(d);
@@ -35,11 +35,6 @@ describe('Testar Updater Service', () => {
     d = await getTodosDeputados(i.slice(0,3))
     p = await gerarPoliticosDeDeputados(d);
     deputados = p;
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.disconnect();
   });
 
   describe('Testar updatePoliticos', () => {

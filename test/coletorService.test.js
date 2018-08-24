@@ -1,7 +1,8 @@
 const {
   getDeputadosLista, getDeputadoById, getTodosDeputados,
-  getDespesasByDeputadoId, getDespesasTodosDeputados,
-  getSenadoresEmExercicio, getDetalhesSenador, getDetalhesTodosSenadores,
+  getTodasDespesasDeputado, getTodasDespesasTodosDeputados,
+  getSenadoresLegislatura, getDetalhesSenador, getDetalhesTodosSenadores,
+  getDespesasSenadoresCsv
 } = require('../services/coletorService');
 
 const {
@@ -10,7 +11,6 @@ const {
 
 const deputado = {
   id: 178957,
-  dataNascimento: '1962-03-29',
   nomeCivil: 'ABEL SALVADOR MESQUITA JUNIOR'
 }
 
@@ -71,32 +71,32 @@ describe('Testar Coletor Service', () => {
 
   });
 
-  describe('Testar getDespesasByDeputadoId', () => {
+  describe('Testar getTodasDespesasDeputado', () => {
 
     test('Id undefined - 400 Bad Request', () => {
-      return getDespesasByDeputadoId(undefined).catch(error => {
+      return getTodasDespesasDeputado(undefined).catch(error => {
         expect(error.statusCode).toBe(400)
       });
     });
 
     test('Despesas encontradas', () => {
-      return getDespesasByDeputadoId(deputado.id).then(response => {
+      return getTodasDespesasDeputado(deputado.id).then(response => {
         expect(response).toBeDefined()
       });
     });
 
   });
 
-  describe('Testar getDespesasTodosDeputados', () => {
+  describe('Testar getTodasDespesasTodosDeputados', () => {
 
     test('Sem ids, lista de despesas vazia', () => {
-      return getDespesasTodosDeputados([]).then(response => {
+      return getTodasDespesasTodosDeputados([]).then(response => {
         expect(response).toEqual([])
       });
     });
 
     test('Despesas de 3 deputados', () => {
-      return getDespesasTodosDeputados(deputadosIds.slice(0,3))
+      return getTodasDespesasTodosDeputados(deputadosIds.slice(0,3))
       .then(response => {
         expect(response).toHaveLength(3)
       });
@@ -104,12 +104,12 @@ describe('Testar Coletor Service', () => {
     
   });
 
-  describe('Testar getSenadoresEmExercicio', () => {
+  describe('Testar getSenadoresLegislatura', () => {
 
-    test('São 81 senadores em exercício', () => {
-      return getSenadoresEmExercicio().then( async response => {
+    test('São pelo menos 81 senadores em um legislatura', () => {
+      return getSenadoresLegislatura().then( async response => {
         const senadores = await getSenadoresCodigos(response);
-        expect(senadores).toHaveLength(81)
+        expect(senadores.length).toBeGreaterThanOrEqual(81)
       });
     });
 
@@ -146,6 +146,9 @@ describe('Testar Coletor Service', () => {
       });
     });
 
+  });
+
+  describe('Testar getDespesasSenadoresCsv', () => {
   });
 
 });
