@@ -99,11 +99,42 @@ async function gerarPoliticosDeSenadores(senadores) {
   }));
 }
 
+/**
+ * Calcula o total de despesas de cada deputados.
+ * @param {[Object]} despesas Array de objetos resultante da função
+ * parsearDespesasDeputados.
+ */
+async function totalizarDespesasDeputados(despesas) {
+  return despesas.map(d => {
+    return {
+    codigo: d.codigo,
+    totalDespesas: d.despesas.reduce((total, d) => total + d['valorDocumento'], 0.00).toFixed(2)
+  }})
+}
+
+async function getDeputadosMatriculas(obterDeputadosV1) {
+  // Converter de xml pra json
+  const deputados = await converterXmlParaJson(obterDeputadosV1);
+
+  // Obter o número de matrícula de cada deputado
+  const matriculas = deputados.deputados.deputado.map(d => ({
+    matricula: d.matricula, codigo: d.ideCadastro, nome: d.nome
+  }));
+
+  return matriculas;
+}
+
 module.exports = {
   converterXmlParaJson,
   validarXml,
   getDeputadosIds,
   getSenadoresCodigos,
   gerarPoliticosDeDeputados,
-  gerarPoliticosDeSenadores
+  gerarPoliticosDeSenadores,
+  converterCsvParaJson,
+  totalizarDespesasSenadores,
+  parsearDespesasDeputados,
+  totalizarDespesasDeputados,
+  parsearDespesasSenadores,
+  getDeputadosMatriculas
 }

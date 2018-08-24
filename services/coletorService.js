@@ -116,6 +116,17 @@ async function getDetalhesTodosSenadores(codigos, concurrency=20) {
   }
 }
 
+async function obterDeputadosV1() {
+  return await rp('http://www.camara.leg.br/SitCamaraWS/Deputados.asmx/ObterDeputados');
+}
+
+async function obterRelatorioDePresenca(matricula, legislatura=55, dataInicio='01/02/2015', dataFim='22/08/2018') {
+  const options = {
+    headers: { 'user-agent': 'node.js' }
+  }  
+  return await rp(`http://www.camara.leg.br/internet/deputado/RelPresencaPlenario.asp?nuLegislatura=${ legislatura }&nuMatricula=${ matricula }&dtInicio=${ dataInicio }&dtFim=${ dataFim }`, options);
+}
+
 module.exports = {
   getDeputadosLista,
   getDeputadoById,
@@ -125,4 +136,10 @@ module.exports = {
   getSenadoresEmExercicio,
   getDetalhesSenador,
   getDetalhesTodosSenadores,
+  getDespesasSenadoresCsv,
+  getTodasDespesasDeputado,
+  getTodasDespesasTodosDeputados,
+  getSenadoresLegislatura,
+  obterDeputadosV1,
+  obterRelatorioDePresenca
 }
