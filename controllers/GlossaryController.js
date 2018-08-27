@@ -20,12 +20,14 @@ exports.create = async function(req, res, next) {
 
 exports.list = async function(req, res, next) {
   try {
-    const { page = 0, perPage = 5 } = req.query;
+    const { letter, page = 0, perPage = 5 } = req.query;
+
+    const query = new RegExp('^'+letter+'\\w+'+'$', 'i');
     
     // Obter termos
     const [ total, terms ] = await Promise.all([
-      Glossary.find({}).countDocuments(),
-      Glossary.find({}, glossaryListProj).sort('term')
+      Glossary.find({ term: query }).countDocuments(),
+      Glossary.find({ term: query }, glossaryListProj).sort('term')
       .paginate(page, perPage)
     ]);
 

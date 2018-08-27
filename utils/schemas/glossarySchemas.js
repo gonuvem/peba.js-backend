@@ -12,6 +12,7 @@ const createTerm = Joi.object().keys({
 
 const listTerms = Joi.object().keys({
   query: {
+    letter: Joi.string().length(1).strict().required(),
     page: pageSchema.optional(),
     perPage: perPageSchema.optional()
   }
