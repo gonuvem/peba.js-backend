@@ -207,6 +207,27 @@ async function getDeputadosMatriculas(obterDeputadosV1) {
   return matriculas;
 }
 
+async function parsearFrequencia(req) {
+  
+  const reqJson = await converterXmlParaJson(req);
+  
+  const mat = reqJson.parlamentar.carteiraParlamentar;
+
+  const dias = reqJson.parlamentar.diasDeSessoes2.dia;
+  
+  return {
+    matricula: mat,
+    frequency: {
+      total: dias.length,
+      presence: dias.filter(d => d.frequencianoDia.includes('Presença')).length,
+      justifiedAbsence: dias.filter(d => 
+        d.frequencianoDia.includes('Ausência justificada')).length,
+      unjustifiedAbsence: dias.filter(d => 
+        d.frequencianoDia.endsWith('Ausência')).length
+    }
+  }
+}
+
 module.exports = {
   converterXmlParaJson,
   validarXml,
@@ -219,5 +240,6 @@ module.exports = {
   parsearDespesasDeputados,
   totalizarDespesasDeputados,
   parsearDespesasSenadores,
-  getDeputadosMatriculas
+  getDeputadosMatriculas,
+  parsearFrequencia
 }
