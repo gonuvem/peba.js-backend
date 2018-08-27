@@ -2,15 +2,18 @@ const CronJob = require('cron').CronJob;
 const {
   getDeputadosLista, getTodosDeputados, getSenadoresLegislatura,
   getDetalhesTodosSenadores, getDespesasSenadoresCsv,
-  getTodasDespesasTodosDeputados
+  getTodasDespesasTodosDeputados, obterDeputadosV1, obterRelatorioDePresenca,
+  listarPresencasParlamentar, parallelPromises,
 } = require('./coletorService');
 const {
   getDeputadosIds, gerarPoliticosDeDeputados, getSenadoresCodigos,
   gerarPoliticosDeSenadores, parsearDespesasSenadores, totalizarDespesasSenadores,
-  parsearDespesasDeputados, totalizarDespesasDeputados
+  parsearDespesasDeputados, totalizarDespesasDeputados, getDeputadosMatriculas,
+  parsearFrequencia
 } = require('./parserService');
 const {
-  updatePoliticos, updateTotalDespesas, updateTotalDespesasDeputados
+  updatePoliticos, updateTotalDespesas, updateTotalDespesasDeputados,
+  updateFrequency,
 } = require('./updaterService');
 const Politico = require('../models/PoliticoModel');
 
@@ -25,8 +28,9 @@ const timezone = 'America/Fortaleza';
 const updatePoliticosJob = new CronJob({
   cronTime: '00 00 02 * * 1',
   onTick: async function(){ 
-    await atualizarPoliticos(),
-    await atualizarTotalDespesas()
+    await atualizarPoliticos();
+    await atualizarTotalDespesas();
+    await updatePoliticiansFrequency();
   },
   start: false,
   timeZone: timezone
@@ -139,9 +143,43 @@ async function atualizarTotalDespesasSenadores() {
   console.log(`${qtdAtualizada} totais de despesas de senadores atualizadas. FIM`);
 }
 
+async function updatePoliticiansFrequency() {
+  await updateDeputiesFrequency();
+}
+
+async function updateDeputiesFrequency() {
+  // Obter os deputados
+  console.log('Obtendo deputados da V1...');
+  const deputiesV1 = await obterDeputadosV1();
+
+  // Extrair as matrículas
+  console.log('Extraindo matrículas...');
+  const deps = await getDeputadosMatriculas(deputiesV1);
+  const mats = deps.map(d => d.matricula);
+
+  // Obter listas de presença
+  console.log('Obtendo listas de presença...');
+  const presList = await parallelPromises(listarPresencasParlamentar, mats);
+
+  // Extrair as frequências
+  console.log('Extraindo frequências...');
+  const freqs = await parallelPromises(parsearFrequencia, presList);
+
+  // Substituir matricula por código
+  const polits = freqs.map(f => ({
+    codigo: deps.find(d => d.matricula === f.matricula).codigo,
+    frequency: f.frequency
+  }));
+
+  // Atualizar o BD
+  console.log('Atualizando BD...');
+  const qtd = await updateFrequency(polits);
+}
+
 
 module.exports = {
   atualizarPoliticos,
   atualizarTotalDespesas,
-  updatePoliticosJob
+  updatePoliticosJob,
+  updatePoliticiansFrequency,
 }
