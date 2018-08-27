@@ -42,8 +42,21 @@ async function updateTotalDespesasDeputados(politicos) {
   }
 }
 
+async function updateFrequency(politicians) {
+  try {
+    const resultado = await Politico.bulkWrite(politicians.map(p => ({
+      updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
+    })));
+    console.log(resultado)
+    return resultado.upsertedCount;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   updatePoliticos,
   updateTotalDespesas,
-  updateTotalDespesasDeputados
+  updateTotalDespesasDeputados,
+  updateFrequency,
 }
