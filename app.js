@@ -3,8 +3,7 @@ const server = restify.createServer();
 const { handleErr } = require('./modules/errorHandler');
 
 // Inicar tarefas agendadas
-const { updatePoliticosJob } = require('./services/schedulerService');
-updatePoliticosJob.start();
+const { updatePoliticiansJob } = require('./tasks/scheduler');
 
 // Requisitar rotas
 const deputadoRoute = require('./routes/DeputadoRoute');
