@@ -7,14 +7,14 @@ const { updatePoliticiansJob } = require('./tasks/scheduler');
 
 // Requisitar rotas
 const deputadoRoute = require('./routes/DeputadoRoute');
-const despesaRoute = require('./routes/DespesaRoute');
+const despesaRoute = require('./routes/ExpenseRoute');
 const politicoRoute = require('./routes/PoliticoRoute');
 const mailerRoute = require('./routes/MailerRoute');
 const glossaryRoute = require('./routes/GlossaryRoute');
 
 // Montar rotas
 deputadoRoute.applyRoutes(server, '/deputados');
-despesaRoute.applyRoutes(server, '/despesas');
+despesaRoute.applyRoutes(server, '/expenses');
 politicoRoute.applyRoutes(server, '/politicos');
 mailerRoute.applyRoutes(server, '/email');
 glossaryRoute.applyRoutes(server, '/glossary');
