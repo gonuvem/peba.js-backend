@@ -2,11 +2,11 @@ const {
   getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv
 } = require('../services/senado/senadoColector');
 const {
-  getSenadoresIds, createPoliticiansFromSenadores,
-  getSenadoresTotalExpenditure, parseSenadoresExpenses
+  getSenadoresIds, createPoliticiansFromSenadores, createSenadoresExpenses,
+  getSenadoresTotalExpenditure, parseSenadoresExpenses,
 } = require('../services/senado/senadoParser');
 const {
-  updatePoliticiansByCode, updatePoliticiansByName
+  updatePoliticiansByCode, updatePoliticiansByName, updatePoliticianExpenses
 } = require('../services/updaterService');
 const { parallelPromises } = require('../utils/utils');
 
@@ -61,7 +61,31 @@ async function updateSenadoresTotalExpenditureTask() {
   }
 }
 
+async function updateSenadoresExpensesTask(amount=undefined) {
+
+  // Obter as despesas de todos os senadores
+  console.log('Obtendo despesas de senadores...')
+  const expensesCsv = await getSenadoresExpensesCsv();
+
+  // Parsear despesas
+  console.log('Parsear despesas de senadores...')
+  const expenses = await parseSenadoresExpenses(expensesCsv);
+
+  // Criar objetos despesas para inserir no BD
+  console.log('Criando as despesas que serão inseridas no BD...');
+  const expensesObj = await createSenadoresExpenses(expenses); 
+  
+  // Atualizar a coleção de despesas
+  console.log(`Atualizando a coleção com ${ expensesObj.length } despesas...`);
+  const count = await updatePoliticianExpenses(expensesObj.slice(0, amount));
+
+  console.log(`${ count } novas despesas inseridas.`);
+
+  return count;
+}
+
 module.exports = {
   updateSenadoresTask,
   updateSenadoresTotalExpenditureTask,
+  updateSenadoresExpensesTask,
 }
