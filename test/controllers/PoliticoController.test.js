@@ -7,10 +7,6 @@ const baseRoute = '/politicos';
 
 describe('Test Politico Controller', () => {
 
-  beforeAll(async () => {
-    await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
-  });
-
   describe('GET /politicos', () => {
 
     test('Políticos piauienses', () => {

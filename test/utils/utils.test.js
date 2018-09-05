@@ -1,4 +1,4 @@
-const { toTitleCase, montarEndereco } = require('../utils/utils');
+const { toTitleCase, montarEndereco } = require('../../utils/utils');
 
 describe.only('Testar utils', () => {
 

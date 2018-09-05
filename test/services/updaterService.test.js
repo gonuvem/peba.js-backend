@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
-const Politico = require('../models/PoliticoModel');
+const Politico = require('../../models/PoliticoModel');
 const {
   getDeputadosListV2, getDeputadoDetail, getDeputadoExpenses,
   getDeputadosListV1, getDeputadoFrequency
-} = require('../services/camara/camaraColector');
+} = require('../../services/camara/camaraColector');
 const {
   getDeputadosIds, createPoliticiansFromDeputados, parseDeputadosExpenses,
   getDeputadosTotalExpenditure, getDeputadosRegistration, parseFrequency
-} = require('../services/camara/camaraParser');
+} = require('../../services/camara/camaraParser');
 const {
   getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv
-} = require('../services/senado/senadoColector');
+} = require('../../services/senado/senadoColector');
 const {
   getSenadoresIds, createPoliticiansFromSenadores,
   getSenadoresTotalExpenditure, parseSenadoresExpenses
-} = require('../services/senado/senadoParser');
+} = require('../../services/senado/senadoParser');
 const {
   updatePoliticiansByCode, updatePoliticiansByName
-} = require('../services/updaterService');
-const { parallelPromises } = require('../utils/utils');
+} = require('../../services/updaterService');
+const { parallelPromises } = require('../../utils/utils');
 
 describe('Testar Updater Service', () => {
 
@@ -27,7 +27,6 @@ describe('Testar Updater Service', () => {
 
   beforeAll(async () => {
     // TODO: Utilizar factories
-    await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
     let l = await getSenadoresList();
     let i = await getSenadoresIds(l);
