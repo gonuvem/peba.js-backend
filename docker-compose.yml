@@ -1,40 +1,24 @@
 version: "3"
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
-    container_name: elasticsearch
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - /usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-  db:
-      image: mongo
-      environment:
-          - MONGODB_DBNAME=peba
-      volumes:
-          - ./data:/data/db
-      ports:
-          - "27017:27017"  
-  app:
-      user: "${UID}:${GID}"
-      container_name: peba_api
-      restart: always
-      volumes:
-          - ./:/usr/src/app
-          - /usr/src/app/node_modules
-      build: .
-      ports: 
-          - "8080:8080"
-      links:
-          - db
-          - elasticsearch
-      depends_on:
-          - db
+    db:
+        image: mongo
+        environment:
+            - MONGODB_DBNAME=peba
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "27017:27017"  
+    app:
+        user: "${UID}:${GID}"
+        container_name: peba_api
+        restart: always
+        volumes:
+            - ./:/usr/src/app
+            - /usr/src/app/node_modules
+        build: .
+        ports: 
+            - "8080:8080"
+        links:
+            - db
+        depends_on:
+            - db
