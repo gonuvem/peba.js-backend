@@ -1,6 +1,6 @@
 const {
   getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv
-} = require('../services/senado/senadoColector');
+} = require('../../../services/senado/senadoColector');
 
 const senador = {
   CodigoParlamentar: '4981',

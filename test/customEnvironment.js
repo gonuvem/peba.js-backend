@@ -1,4 +1,5 @@
 const NodeEnvironment = require('jest-environment-node');
+const mongoose = require('mongoose');
 
 class CustomEnvironment extends NodeEnvironment {
 
@@ -8,10 +9,13 @@ class CustomEnvironment extends NodeEnvironment {
 
   async	setup() {
     await super.setup();
+    /*await mongoose.connect('mongodb://db:27017/pebatest',
+  { useNewUrlParser: true });*/
   }
 
   async	teardown() {
     await super.teardown();
+    //await mongoose.disconnect();
   }
 
   runScript(script) {

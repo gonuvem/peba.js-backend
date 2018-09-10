@@ -2,10 +2,11 @@ const CronJob = require('cron').CronJob;
 const timezone = 'America/Fortaleza';
 const {
   updateDeputadosTask, updateDeputadosTotalExpenditureTask,
-  updateDeputadosFrequency
+  updateDeputadosFrequency, updateDeputadosExpensesTask
 } = require('./camaraTasks');
 const {
-  updateSenadoresTask, updateSenadoresTotalExpenditureTask
+  updateSenadoresTask, updateSenadoresTotalExpenditureTask,
+  updateSenadoresExpensesTask
 } = require('./senadoTasks');
 
 /**
@@ -71,10 +72,21 @@ async function updatePoliticiansFrequencyTask() {
   }
 }
 
+async function updateExpensesTask(amount=undefined) {
+  try {
+    const deputadosExp = await updateDeputadosExpensesTask(amount);
+    const senadoresExp = await updateSenadoresExpensesTask(amount);
+    return deputadosExp + senadoresExp;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   updateTask,
   updatePoliticiansTask,
   updateTotalExpenditureTask,
   updatePoliticiansFrequencyTask,
   updatePoliticiansJob,
+  updateExpensesTask,
 }

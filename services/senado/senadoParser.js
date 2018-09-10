@@ -1,7 +1,9 @@
 const Papa = require('papaparse');
+const moment = require('moment');
 const {
   toTitleCase, removeAccents
 } = require('../../utils/utils');
+const { getPoliticoMapNameId } = require('../../helpers/politicianHelper');
 
 /**
  * Converte um arquivo csv para json.
@@ -36,7 +38,7 @@ async function getSenadoresIds(senadoresList) {
 async function createPoliticiansFromSenadores(senadores) {
   return senadores.map(sen => sen.DetalheParlamentar.Parlamentar).map(s => {
     const mandato = s.MandatoAtual || s.UltimoMandato;
-    const situacao = s.MandatoAtual ? 'Em Exercício' : 'Afastado';
+    const situacao = s.MandatoAtual ? 'Exercício' : 'Afastado';
     const dados = s.DadosBasicosParlamentar;
     const nome = toTitleCase(
       removeAccents(s.IdentificacaoParlamentar.NomeParlamentar));
@@ -114,9 +116,34 @@ async function getSenadoresTotalExpenditure(expenses) {
   }));
 }
 
+async function createSenadoresExpenses(expenses) {
+  const mapNameId = await getPoliticoMapNameId('Senador');
+
+  return expenses.data.map(e => {
+    const value = parseFloat(e['VALOR_REEMBOLSADO'].replace(',', '.')).toFixed(2);
+    const name = toTitleCase(removeAccents(e['SENADOR']));
+    
+    return {
+    politicianId: mapNameId[name],
+    year: e['ANO'],
+    month: e['MES'],
+    type: e['TIPO_DESPESA'],
+    provider: {
+      cnpjCpf: e['CNPJ_CPF'].replace(/\D/g, ''),
+      name: e['FORNECEDOR']
+    },
+    code: Object.values(e).join('_'),
+    numDoc: e['DOCUMENTO'],
+    date: moment(e['DATA'], 'DD/MM/YYYY'),
+    value: value
+    }
+  });
+}
+
 module.exports = {
   getSenadoresIds,
   createPoliticiansFromSenadores,
   parseSenadoresExpenses,
   getSenadoresTotalExpenditure,
+  createSenadoresExpenses,
 }

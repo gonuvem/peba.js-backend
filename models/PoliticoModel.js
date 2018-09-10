@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('../models/ExpenseModel');
 
 const PoliticoSchema = new mongoose.Schema({
   codigo                : { type: String, required: true },
@@ -16,7 +17,7 @@ const PoliticoSchema = new mongoose.Schema({
   siglaUfNascimento     : { type: String, required: true },
   totalDespesas         : { type: String },
   cargo                 : { type: String, enum: ['Senador', 'Deputado Federal'], required: true },
-  situacao              : { type: String, enum: ['Em Exercício', 'Afastado'] },
+  situacao              : { type: String },
   registration: String,
   frequency: {
     total: Number, presence: Number, justifiedAbsence: Number, unjustifiedAbsence: Number

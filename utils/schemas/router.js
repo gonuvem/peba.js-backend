@@ -1,6 +1,7 @@
 const { searchByUf, getById, searchByTerms } = require('./politicoSchemas');
 const { sendEmailToPolitician } = require('./mailerSchemas');
 const { createTerm, listTerms } = require('./glossarySchemas');
+const { getExpenses } = require('./expenseSchemas');
 
 module.exports = {
     'GET /politicos'        : searchByUf,
@@ -11,4 +12,6 @@ module.exports = {
 
     'POST /glossary'        : createTerm,
     'GET /glossary'         : listTerms,
+
+    'GET /expenses'         : getExpenses,
 }

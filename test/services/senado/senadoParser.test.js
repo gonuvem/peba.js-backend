@@ -1,10 +1,10 @@
 const {
   getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv
-} = require('../services/senado/senadoColector');
+} = require('../../../services/senado/senadoColector');
 const {
   getSenadoresIds, createPoliticiansFromSenadores, parseSenadoresExpenses,
   getSenadoresTotalExpenditure
-} = require('../services/senado/senadoParser');
+} = require('../../../services/senado/senadoParser');
 
 const senador = {
   id: '5322',

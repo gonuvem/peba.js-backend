@@ -5,10 +5,11 @@ const {
 } = require('../services/camara/camaraColector');
 const {
   getDeputadosIds, createPoliticiansFromDeputados, parseDeputadosExpenses,
-  getDeputadosTotalExpenditure, getDeputadosRegistration, parseFrequency
+  getDeputadosTotalExpenditure, getDeputadosRegistration, parseFrequency,
+  createDeputadosExpenses
 } = require('../services/camara/camaraParser');
 const {
-  updatePoliticiansByCode, updatePoliticiansByName
+  updatePoliticiansByCode, updatePoliticiansByName, updatePoliticianExpenses
 } = require('../services/updaterService');
 const { parallelPromises } = require('../utils/utils');
 
@@ -102,8 +103,35 @@ async function updateDeputadosFrequency() {
   
 }
 
+async function updateDeputadosExpensesTask(amount=undefined) {
+  // Obter os códigos de todos os deputados
+  console.log('Obtendo os códigos dos deputados...');
+  const codes = (await Politico.
+    find({ cargo: 'Deputado Federal' }, '-_id codigo')).map(dep => dep.codigo).slice(0, amount);
+
+  // Obter as despesas de todos os deputados usando a API
+  console.log(`Obtendo as despesas de ${ codes.length } deputados...`);
+  const expensesAPI = await parallelPromises(getDeputadoExpenses, codes);
+
+  // Parsear as despesas
+  console.log('Parseando as despesas dos deputados...');
+  const expenses = await parseDeputadosExpenses(expensesAPI);
+
+  // Criar objetos despesas para inserir no BD
+  console.log('Criando as despesas que serão inseridas no BD...');
+  const expensesObj = await createDeputadosExpenses(expenses);
+
+  // Atualizar a coleção de despesas
+  console.log(`Atualizando a coleção com ${ expensesObj.length } despesas...`);
+  const count = await updatePoliticianExpenses(expensesObj);
+
+  console.log(`${ count } novas despesas inseridas.`);
+  return count;
+}
+
 module.exports = {
   updateDeputadosTask,
   updateDeputadosTotalExpenditureTask,
   updateDeputadosFrequency,
+  updateDeputadosExpensesTask,
 }

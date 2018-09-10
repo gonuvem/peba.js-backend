@@ -1,7 +1,7 @@
 const { 
   getDeputadosListV2, getDeputadoDetail, getDeputadoExpenses,
   getDeputadoFrequency, getDeputadosListV1,
-} = require('../services/camara/camaraColector');
+} = require('../../../services/camara/camaraColector');
 
 const deputado = {
   id: 178957,

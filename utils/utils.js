@@ -1,4 +1,6 @@
 const { poolAll } = require('swimmer');
+const currentYear = 2018;
+
 /**
  * Transforma cada primeira letra de um texto em letra maiúsculas enquanto as
  * outras são transformadas para minúsculas.
@@ -43,10 +45,18 @@ async function parallelPromises(asyncFunc, paramList, concurrency=20) {
   concurrency);
 }
 
+async function splitArray(array, size) {
+  return array
+  .map((element, i) => (i % size === 0) ? array.slice(i, i + size) : null)
+  .filter( element => element )
+}
+
 
 module.exports = {
   toTitleCase,
   montarEndereco,
   removeAccents,
   parallelPromises,
+  splitArray,
+  currentYear,
 }

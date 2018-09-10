@@ -1,11 +1,11 @@
 const {
   getDeputadosListV2, getDeputadoDetail, getDeputadoExpenses,
   getDeputadosListV1, getDeputadoFrequency
-} = require('../services/camara/camaraColector');
+} = require('../../../services/camara/camaraColector');
 const {
   getDeputadosIds, createPoliticiansFromDeputados, parseDeputadosExpenses,
   getDeputadosTotalExpenditure, getDeputadosRegistration, parseFrequency
-} = require('../services/camara/camaraParser');
+} = require('../../../services/camara/camaraParser');
 
 const deputado = {
   id: 178957,

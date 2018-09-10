@@ -2,6 +2,7 @@ const fastXmlParser = require('fast-xml-parser');
 const {
   toTitleCase, montarEndereco, removeAccents
 } = require('../../utils/utils');
+const { getPoliticoMapCodeId } = require('../../helpers/politicianHelper');
 
 /**
  * Validar um arquivo xml.
@@ -56,6 +57,7 @@ async function createPoliticiansFromDeputados(deputados) {
     sexo: d.sexo,
     dataNascimento: d.dataNascimento,
     siglaUfNascimento: d.ufNascimento,
+    situacao: d.situacao,
     cargo: 'Deputado Federal'
   }));
 }
@@ -136,6 +138,31 @@ async function parseFrequency(deputadoFrequency) {
   return { matricula: registration, frequency: frequency }
 }
 
+async function createDeputadosExpenses(depExpenses) {
+
+  const mapCodeId = await getPoliticoMapCodeId('Deputado Federal');
+  
+  const expensesByDep = depExpenses.map(dep => {
+    const politicianId = mapCodeId[dep.codigo];
+    return dep.despesas.map(e => ({
+      politicianId: politicianId,
+      year: e.ano,
+      month: e.mes,
+      type: e.tipoDespesa,
+      provider: {
+        cnpjCpf: e.cnpjCpfFornecedor,
+        name: e.nomeFornecedor
+      },
+      code: Object.values(e).join('_'),
+      numDoc: e.numDocumento,
+      date: new Date(e.dataDocumento),
+      value: e.valorDocumento.toFixed(2)
+    }));
+  });
+
+  return [].concat(...expensesByDep);
+}
+
 module.exports = {
   getDeputadosIds,
   createPoliticiansFromDeputados,
@@ -143,4 +170,5 @@ module.exports = {
   getDeputadosTotalExpenditure,
   getDeputadosRegistration,
   parseFrequency,
+  createDeputadosExpenses,
 }
