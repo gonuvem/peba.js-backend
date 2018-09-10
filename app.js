@@ -1,6 +1,10 @@
 const restify = require('restify');
 const server = restify.createServer();
 
+// Inicar tarefas agendadas
+const { updatePoliticosJob } = require('./services/schedulerService');
+updatePoliticosJob.start();
+
 // Requisitar rotas
 const deputadoRoute = require('./routes/DeputadoRoute');
 const despesaRoute = require('./routes/DespesaRoute');

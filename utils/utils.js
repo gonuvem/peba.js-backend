@@ -22,7 +22,16 @@ function montarEndereco(gabinete) {
   `Sala ${gabinete.sala}, Andar ${gabinete.andar}`
 }
 
+/**
+ * Remove os acentos de uma palavra.
+ * @param {String} str Palavra com acentos.
+ */
+function removeAccents(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+}
+
 module.exports = {
   toTitleCase,
   montarEndereco,
+  removeAccents
 }

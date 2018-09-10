@@ -1,5 +1,6 @@
 const fastXmlParser = require('fast-xml-parser');
-const { toTitleCase, montarEndereco } = require('../utils/utils');
+const Papa = require('papaparse');
+const { toTitleCase, montarEndereco, removeAccents } = require('../utils/utils');
 
 /**
  * Validar um arquivo xml.
@@ -17,11 +18,7 @@ function validarXml(dadosXml) {
  * @param {String} dadosXml 
  */
 async function converterXmlParaJson(dadosXml) {
-  try {
-    return await validarXml(dadosXml) && fastXmlParser.parse(dadosXml);
-  } catch (error) {
-    throw error;
-  }
+  return await validarXml(dadosXml) && fastXmlParser.parse(dadosXml);
 }
 
 /**
@@ -32,21 +29,23 @@ async function converterXmlParaJson(dadosXml) {
  */
 async function getDeputadosIds(deputadosLista) {
   return [].concat(
-    ...deputadosLista.map(resp => resp.dados.map(dep => dep.id)));
+    ...deputadosLista.map(resp => resp.dados.map(dep => dep.id))
+  );
 }
 
 /**
- * Obtém da resposta da função getSenadoresEmExercicio uma lista de códigos de
+ * Obtém da resposta da função getSenadoresLegislatura uma lista de códigos de
  * senadores que será utilizada em outras requisições à API do Senado.
- * @param {Object} senadoresEmExercicio JSON de resposta da função 
- * getSenadoresEmExercicio.
+ * @param {Object} senadoresLegislatura JSON de resposta da função 
+ * getSenadoresLegislatura.
  */
-async function getSenadoresCodigos(senadoresEmExercicio) {
+async function getSenadoresCodigos(senadoresLegislatura) {
   const senadoresLista = 
-  senadoresEmExercicio.ListaParlamentarEmExercicio.Parlamentares.Parlamentar;
+  senadoresLegislatura.ListaParlamentarLegislatura.Parlamentares.Parlamentar;
 
   return senadoresLista.map(sen =>
-    sen.IdentificacaoParlamentar.CodigoParlamentar);
+    sen.IdentificacaoParlamentar.CodigoParlamentar
+  );
 }
 
 /**
@@ -59,7 +58,7 @@ async function getSenadoresCodigos(senadoresEmExercicio) {
 async function gerarPoliticosDeDeputados(deputados) {
   return deputados.map(dep => dep.dados).map(d => ({
     codigo                : d.ultimoStatus.id.toString(),
-    nome                  : toTitleCase(d.ultimoStatus.nome),
+    nome                  : toTitleCase(removeAccents(d.ultimoStatus.nome)),
     urlFoto               : d.ultimoStatus.urlFoto,
     siglaPartido          : d.ultimoStatus.siglaPartido,
     siglaUf               : d.ultimoStatus.siglaUf,
@@ -71,6 +70,7 @@ async function gerarPoliticosDeDeputados(deputados) {
     sexo                  : d.sexo,
     dataNascimento        : d.dataNascimento,
     siglaUfNascimento     : d.ufNascimento,
+    cargo                 : 'Deputado Federal'
   }));
 }
 
@@ -82,21 +82,117 @@ async function gerarPoliticosDeDeputados(deputados) {
  * getDetalhesTodosSenadores.
  */
 async function gerarPoliticosDeSenadores(senadores) {
-  return senadores.map(sen => sen.DetalheParlamentar.Parlamentar).map(s => ({
-    codigo            : s.IdentificacaoParlamentar.CodigoParlamentar,
-    nome              : s.IdentificacaoParlamentar.NomeParlamentar,
-    urlFoto           : s.IdentificacaoParlamentar.UrlFotoParlamentar,
-    siglaPartido      : s.IdentificacaoParlamentar.SiglaPartidoParlamentar,
-    siglaUf           : s.IdentificacaoParlamentar.UfParlamentar,
-    descricaoStatus   : s.MandatoAtual.DescricaoParticipacao,
-    endereco          : s.DadosBasicosParlamentar.EnderecoParlamentar,
-    email             : s.IdentificacaoParlamentar.EmailParlamentar,
-    telefone          : s.DadosBasicosParlamentar.TelefoneParlamentar,
-    nomeCivil         : s.IdentificacaoParlamentar.NomeCompletoParlamentar,
-    sexo              : s.IdentificacaoParlamentar.SexoParlamentar[0],
-    dataNascimento    : s.DadosBasicosParlamentar.DataNascimento,
-    siglaUfNascimento : s.DadosBasicosParlamentar.UfNaturalidade,
+  return senadores.map(sen => sen.DetalheParlamentar.Parlamentar).map(s => {
+    const mandato = s.MandatoAtual || s.UltimoMandato;
+    const situacao = s.MandatoAtual ? 'Em Exercício' : 'Afastado';
+    const dados = s.DadosBasicosParlamentar;
+    const nome = toTitleCase(
+      removeAccents(s.IdentificacaoParlamentar.NomeParlamentar));
+
+    return {
+      codigo            : s.IdentificacaoParlamentar.CodigoParlamentar,
+      nome              : nome,
+      urlFoto           : s.IdentificacaoParlamentar.UrlFotoParlamentar,
+      siglaPartido      : s.IdentificacaoParlamentar.SiglaPartidoParlamentar,
+      siglaUf           : s.IdentificacaoParlamentar.UfParlamentar,
+      descricaoStatus   : mandato.DescricaoParticipacao,
+      endereco          : dados && dados.EnderecoParlamentar,
+      email             : s.IdentificacaoParlamentar.EmailParlamentar,
+      telefone          : dados && dados.TelefoneParlamentar,
+      nomeCivil         : s.IdentificacaoParlamentar.NomeCompletoParlamentar,
+      sexo              : s.IdentificacaoParlamentar.SexoParlamentar[0],
+      dataNascimento    : dados && dados.DataNascimento,
+      siglaUfNascimento : dados && dados.UfNaturalidade,
+      cargo             : 'Senador',
+      situacao          : situacao
+    }
+  });
+}
+
+/**
+ * Converte um arquivo csv para json.
+ * @param {String} csvString String em formato csv.
+ */
+async function converterCsvParaJson(csvString) {
+  return Papa.parse(csvString, { header: true, skipEmptyLines: true });
+}
+
+/**
+ * Transforma o arquivo csv de despesas dos senadores em um objeto json.
+ * @param {String} despesasCsv Arquivo csv de despesas resultante da função
+ * getDespesasSenadoresCsv.
+ */
+async function parsearDespesasSenadores(despesasCsv) {
+  // Remover falso cabeçalho
+  const desp = despesasCsv.slice(despesasCsv.indexOf('\n')+1);
+
+  // Converter csv para json
+  return await converterCsvParaJson(desp);
+}
+
+/**
+ * Calcula o total de despesas de cada senador de acordo com o arquivo csv
+ * transformado em json.
+ * @param {Object} despesas Objeto resultante da função 
+ * parsearDespesasSenadores.
+ */
+async function totalizarDespesasSenadores(despesas) {
+  const senadores = Object.values(despesas.data.reduce((senador, sen) => {
+    // Corrigir inconsistência entre resposta da API e conteúdo do CSV
+    if(sen['SENADOR'] === 'PEDRO CHAVES DOS SANTOS FILHO') {
+      sen['SENADOR'] = 'PEDRO CHAVES';
+    }
+
+    // Criar um objeto pra cada senador com nome e total de despesas
+    const s = senador[sen['SENADOR']] || {
+      nome: sen['SENADOR'],
+      total: 0.00
+    }
+
+    // Obter o valor da despesa e formatá-lo
+    valor = sen['VALOR_REEMBOLSADO'] &&
+    parseFloat(sen['VALOR_REEMBOLSADO'].replace(',','.')).toFixed(2);
+
+    // Somar o valor analisado com o total armazenado no senador correspondente
+    s.total += valor && parseFloat(valor);
+    senador[sen['SENADOR']] = s;
+
+    return senador;
+  }, {}))
+  
+  return senadores.map(s => ({
+    // Formatar nome retirando acentos e colocando a primeira letra,
+    // de cada palavra, maiúscula
+    nome: toTitleCase(removeAccents(s.nome)),
+
+    // Formatar total de despesas para duas casas decimais
+    totalDespesas: (s.total.toFixed(2))
   }));
+}
+
+/**
+ * Agrupa as despesas de cada deputado, junto com seu código.
+ * @param {[Object]} depDespesas Array de objetos com as despesas dos deputados
+ * resultante da função getTodasDespesasTodosDeputados.
+ */
+async function parsearDespesasDeputados(depDespesas) {
+  return depDespesas.map(d => ({
+    codigo: d.id,
+    despesas: [].concat(...d.despesas.map(des => des.dados))
+  }));
+}
+
+/**
+ * Calcula o total de despesas de cada deputados.
+ * @param {[Object]} despesas Array de objetos resultante da função
+ * parsearDespesasDeputados.
+ */
+async function totalizarDespesasDeputados(despesas) {
+  return despesas.map(d => {
+    return {
+    codigo: d.codigo,
+    totalDespesas: d.despesas.reduce((total, d) => total + d['valorDocumento'], 0.00).toFixed(2)
+  }})
 }
 
 module.exports = {
@@ -105,5 +201,10 @@ module.exports = {
   getDeputadosIds,
   getSenadoresCodigos,
   gerarPoliticosDeDeputados,
-  gerarPoliticosDeSenadores
+  gerarPoliticosDeSenadores,
+  converterCsvParaJson,
+  totalizarDespesasSenadores,
+  parsearDespesasDeputados,
+  totalizarDespesasDeputados,
+  parsearDespesasSenadores
 }

@@ -14,6 +14,9 @@ const PoliticoSchema = new mongoose.Schema({
   sexo                  : { type: String, required: true },
   dataNascimento        : { type: Date  , required: true },
   siglaUfNascimento     : { type: String, required: true },
+  totalDespesas         : { type: String },
+  cargo                 : { type: String, enum: ['Senador', 'Deputado Federal'], required: true },
+  situacao              : { type: String, enum: ['Em Exercício', 'Afastado'] }
 }, { timestamps: true });
 
 const Politico = mongoose.model('Politico', PoliticoSchema);
