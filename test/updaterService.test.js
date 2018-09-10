@@ -19,7 +19,7 @@ describe('Testar Updater Service', () => {
 
   let senadores = [];
   let deputados = [];
-  
+
   beforeAll(async () => {
     // TODO: Utilizar factories
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
@@ -35,11 +35,6 @@ describe('Testar Updater Service', () => {
     d = await getTodosDeputados(i.slice(0,3))
     p = await gerarPoliticosDeDeputados(d);
     deputados = p;
-  });
-
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.disconnect();
   });
 
   describe('Testar updatePoliticos', () => {
