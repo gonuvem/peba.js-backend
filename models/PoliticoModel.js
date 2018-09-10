@@ -16,7 +16,11 @@ const PoliticoSchema = new mongoose.Schema({
   siglaUfNascimento     : { type: String, required: true },
   totalDespesas         : { type: String },
   cargo                 : { type: String, enum: ['Senador', 'Deputado Federal'], required: true },
-  situacao              : { type: String, enum: ['Em Exercício', 'Afastado'] }
+  situacao              : { type: String, enum: ['Em Exercício', 'Afastado'] },
+  registration: String,
+  frequency: {
+    total: Number, presence: Number, justifiedAbsence: Number, unjustifiedAbsence: Number
+  }
 }, { timestamps: true });
 
 PoliticoSchema.index(

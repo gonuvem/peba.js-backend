@@ -195,6 +195,39 @@ async function totalizarDespesasDeputados(despesas) {
   }})
 }
 
+async function getDeputadosMatriculas(obterDeputadosV1) {
+  // Converter de xml pra json
+  const deputados = await converterXmlParaJson(obterDeputadosV1);
+
+  // Obter o número de matrícula de cada deputado
+  const matriculas = deputados.deputados.deputado.map(d => ({
+    matricula: d.matricula, codigo: d.ideCadastro, nome: d.nome
+  }));
+
+  return matriculas;
+}
+
+async function parsearFrequencia(req) {
+  
+  const reqJson = await converterXmlParaJson(req);
+  
+  const mat = reqJson.parlamentar.carteiraParlamentar;
+
+  const dias = reqJson.parlamentar.diasDeSessoes2.dia;
+  
+  return {
+    matricula: mat,
+    frequency: {
+      total: dias.length,
+      presence: dias.filter(d => d.frequencianoDia.includes('Presença')).length,
+      justifiedAbsence: dias.filter(d => 
+        d.frequencianoDia.includes('Ausência justificada')).length,
+      unjustifiedAbsence: dias.filter(d => 
+        d.frequencianoDia.endsWith('Ausência')).length
+    }
+  }
+}
+
 module.exports = {
   converterXmlParaJson,
   validarXml,
@@ -206,5 +239,7 @@ module.exports = {
   totalizarDespesasSenadores,
   parsearDespesasDeputados,
   totalizarDespesasDeputados,
-  parsearDespesasSenadores
+  parsearDespesasSenadores,
+  getDeputadosMatriculas,
+  parsearFrequencia
 }

@@ -1,5 +1,10 @@
 const rp = require('request-promise-any');
 const { poolAll } = require('swimmer');
+const moment = require('moment');
+
+const numLegislatura = 55;
+const dInicio = '01/02/2015';
+const dFim = moment().locale('pt-br').format('L');
 
 /**
  * URL base da nova API de Dados Abertos da Câmara dos Deputados.
@@ -137,6 +142,18 @@ async function getDespesasSenadoresCsv() {
   );
 }
 
+async function obterDeputadosV1() {
+  return await rp('http://www.camara.leg.br/SitCamaraWS/Deputados.asmx/ObterDeputados');
+}
+
+async function listarPresencasParlamentar(matricula, dataInicio=dInicio, dataFim=dFim) {
+  return await rp(`http://www.camara.leg.br/SitCamaraWS/sessoesreunioes.asmx/ListarPresencasParlamentar?dataIni=${ dataInicio }&dataFim=${ dataFim }&numMatriculaParlamentar=${ matricula }`);
+}
+
+async function parallelPromises(promise, list, concurrency=20) {
+  return await poolAll(list.map(el => () => promise(el)), concurrency);
+}
+
 module.exports = {
   getDeputadosLista,
   getDeputadoById,
@@ -146,5 +163,9 @@ module.exports = {
   getDespesasSenadoresCsv,
   getTodasDespesasDeputado,
   getTodasDespesasTodosDeputados,
-  getSenadoresLegislatura
+  getSenadoresLegislatura,
+  obterDeputadosV1,
+  listarPresencasParlamentar,
+  parallelPromises,
+
 }
