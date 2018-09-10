@@ -1,6 +1,7 @@
-const { searchByUf, getById } = require('./politicoSchemas');
+const { searchByUf, getById, searchByTerms } = require('./politicoSchemas');
 
 module.exports = {
-    '/politicos': searchByUf,
-    '/politicos/:id': getById
+    'GET /politicos'        : searchByUf,
+    'GET /politicos/:id'    : getById,
+    'POST /politicos'       : searchByTerms,
 }

@@ -16,6 +16,7 @@ deputadoRoute.applyRoutes(server, '/deputados');
 despesaRoute.applyRoutes(server, '/despesas');
 politicoRoute.applyRoutes(server, '/politicos');
 
+server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
 server.on('restifyError', handleErr);
 

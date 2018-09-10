@@ -19,6 +19,24 @@ const PoliticoSchema = new mongoose.Schema({
   situacao              : { type: String, enum: ['Em Exercício', 'Afastado'] }
 }, { timestamps: true });
 
+PoliticoSchema.index(
+  {
+    nome: 'text',
+    siglaPartido: 'text',
+    siglaUf: 'text',
+    nomeCivil: 'text',
+  },
+  {
+    name: 'SearchIndex',
+    weights: {
+      nome: 2,
+      siglaPartido: 2,
+      siglaUf: 2,
+      nomeCivil: 1
+    }
+  }
+);
+
 const Politico = mongoose.model('Politico', PoliticoSchema);
 
 module.exports = Politico;
