@@ -15,6 +15,12 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - npm install
           #- npm test
+        services:
+          - database
+definitions:
+  services:
+    database:
+      image: mongo
           
     - step:
       # set HEROKU_API_KEY and HEROKU_APP_NAME environment variables
