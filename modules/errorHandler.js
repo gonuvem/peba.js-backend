@@ -8,6 +8,6 @@ const errors = {
 exports.handleErr = (req, res, error, callback) => {
   const mappedError = errors[error.name];
   const newError = (mappedError && mappedError(error)) || error;
-  res.send(newError)
-  return callback()
+  res.send(newError);
+  return callback();
 }

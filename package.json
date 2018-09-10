@@ -11,6 +11,7 @@
     "foreman": "^3.0.1",
     "joi": "^13.6.0",
     "mongoose": "^5.2.5",
+    "nodemailer": "^4.6.8",
     "papaparse": "^4.6.0",
     "request": "^2.87.0",
     "request-promise-any": "^1.0.5",
