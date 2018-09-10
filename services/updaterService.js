@@ -1,62 +1,43 @@
 const Politico = require('../models/PoliticoModel');
-const { toTitleCase, montarEndereco } = require('../utils/utils');
 
 /**
  * Cria, ou atualiza, as informações dos políticos de forma massiva.
- * @param {[Object]} politicos Array de Objeto JSON que contém as informações
+ * Utiliza o nome do político como filtro.
+ * @param {[Object]} politicians Array de Objeto JSON que contém as informações
  * dos politicos.
  */
-async function updatePoliticos(politicos) {
+async function updatePoliticiansByName(politicians) {
   try {
-    const resultado = await Politico.bulkWrite(politicos.map(p => ({
-      updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
-    })));
-    console.log(resultado)
-    return resultado.upsertedCount;
-  } catch (error) {
-    throw error;
-  }
-}
-
-async function updateTotalDespesas(politicos) {
-  try {
-    const resultado = await Politico.bulkWrite(politicos.map(p => ({
+    const result = await Politico.bulkWrite(politicians.map(p => ({
       updateOne: { filter: { nome: p.nome }, update: p, upsert: true }
     })));
-    console.log(resultado)
-    return resultado.upsertedCount;
+    console.log(result)
+    return result.upsertedCount + result.modifiedCount;
   } catch (error) {
     throw error;
   }
 }
 
-async function updateTotalDespesasDeputados(politicos) {
+/**
+ * Cria, ou atualiza, as informações dos políticos de forma massiva.
+ * Utiliza o código do político como filtro.
+ * @param {[Object]} politicians Array de Objeto JSON que contém as informações
+ * dos politicos.
+ */
+async function updatePoliticiansByCode(politicians) {
   try {
-    const resultado = await Politico.bulkWrite(politicos.map(p => ({
+    const result = await Politico.bulkWrite(politicians.map(p => ({
       updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
     })));
-    console.log(resultado)
-    return resultado.upsertedCount;
+    console.log(result)
+    return result.upsertedCount + result.modifiedCount;
   } catch (error) {
     throw error;
   }
 }
 
-async function updateFrequency(politicians) {
-  try {
-    const resultado = await Politico.bulkWrite(politicians.map(p => ({
-      updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
-    })));
-    console.log(resultado)
-    return resultado.upsertedCount;
-  } catch (error) {
-    throw error;
-  }
-}
 
 module.exports = {
-  updatePoliticos,
-  updateTotalDespesas,
-  updateTotalDespesasDeputados,
-  updateFrequency,
+  updatePoliticiansByName,
+  updatePoliticiansByCode
 }
