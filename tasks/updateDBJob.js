@@ -1,3 +1,5 @@
 const { updateTask } = require('./scheduler');
 
-updateTask();
+updateTask()
+.then(console.log('Tarefa realizada com sucesso'))
+.catch(error => console.log(error));

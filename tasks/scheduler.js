@@ -43,6 +43,7 @@ async function updateTask() {
     await updatePoliticiansFrequencyTask(); 
   } catch (error) {
     console.log(error)
+    throw error;
   }
 }
 
@@ -52,6 +53,7 @@ async function updatePoliticiansTask() {
     await updateSenadoresTask();
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -61,6 +63,7 @@ async function updateTotalExpenditureTask() {
     await updateSenadoresTotalExpenditureTask();
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -69,6 +72,7 @@ async function updatePoliticiansFrequencyTask() {
     await updateDeputadosFrequency(); 
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -79,6 +83,7 @@ async function updateExpensesTask(amount=undefined) {
     return deputadosExp + senadoresExp;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 

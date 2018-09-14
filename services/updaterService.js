@@ -16,6 +16,7 @@ async function updatePoliticiansByName(politicians) {
     console.log(result)
     return result.upsertedCount + result.modifiedCount;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 }
@@ -34,6 +35,7 @@ async function updatePoliticiansByCode(politicians) {
     console.log(result)
     return result.upsertedCount + result.modifiedCount;
   } catch (error) {
+    console.log(error)
     throw error;
   }
 }
