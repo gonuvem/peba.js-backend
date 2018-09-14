@@ -13,7 +13,6 @@ async function updatePoliticiansByName(politicians) {
     const result = await Politico.bulkWrite(politicians.map(p => ({
       updateOne: { filter: { nome: p.nome }, update: p, upsert: true }
     })));
-    console.log(result)
     return result.upsertedCount + result.modifiedCount;
   } catch (error) {
     console.log(error)
@@ -32,7 +31,6 @@ async function updatePoliticiansByCode(politicians) {
     const result = await Politico.bulkWrite(politicians.map(p => ({
       updateOne: { filter: { codigo: p.codigo }, update: p, upsert: true }
     })));
-    console.log(result)
     return result.upsertedCount + result.modifiedCount;
   } catch (error) {
     console.log(error)
@@ -42,7 +40,7 @@ async function updatePoliticiansByCode(politicians) {
 
 async function updatePoliticianExpenses(expenses) {
   try {
-    const batchSize = 5000;
+    const batchSize = 3000;
 
     const expensesBulk = expenses.map(e => ({
       updateOne: { filter: { code: e.code }, update: e, upsert: true }

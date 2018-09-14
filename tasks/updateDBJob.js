@@ -1,5 +1,6 @@
+const mongoose = require('mongoose');
 const { updateTask } = require('./scheduler');
 
-updateTask()
-.then(console.log('Tarefa realizada com sucesso'))
-.catch(error => console.log(error));
+mongoose.connect('mongodb://db:27017/pebatest', { useNewUrlParser: true });
+
+updateTask();
