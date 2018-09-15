@@ -51,6 +51,10 @@ async function splitArray(array, size) {
   .filter( element => element )
 }
 
+function resolve(path, obj, separator='.') {
+  const properties = Array.isArray(path) ? path : path.split(separator);
+  return properties.reduce((prev, curr) => prev && prev[curr], obj);
+}
 
 module.exports = {
   toTitleCase,
@@ -59,4 +63,5 @@ module.exports = {
   parallelPromises,
   splitArray,
   currentYear,
+  resolve,
 }
