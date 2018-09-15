@@ -13,6 +13,13 @@ const getExpenses = Joi.object().keys({
   }
 });
 
+const getChartsData = Joi.object().keys({
+  query: {
+    politicianId: idSchema.required(),
+  }
+});
+
 module.exports = {
   getExpenses,
+  getChartsData,
 }

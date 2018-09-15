@@ -37,10 +37,12 @@ async function updateTask() {
     console.log('INICIANDO TAREFAS...');
     console.log('Atualizar políticos...');
     await updatePoliticiansTask();
+    console.log('Atualizar as despesas dos políticos...');
+    await updateExpensesTask();
+    console.log('Atualizar frequência dos políticos...');
+    await updatePoliticiansFrequencyTask();
     console.log('Atualizar total de despesas...');
     await updateTotalExpenditureTask();
-    console.log('Atualizar frequência dos políticos...');
-    await updatePoliticiansFrequencyTask(); 
   } catch (error) {
     console.log(error)
     throw error;
