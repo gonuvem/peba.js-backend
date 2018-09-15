@@ -5,4 +5,6 @@ const ExpenseController = require('../controllers/ExpenseController');
 
 router.get('', validateRequest, ExpenseController.getExpenses);
 
+router.get('/charts', validateRequest, ExpenseController.getChartsData);
+
 module.exports = router;
