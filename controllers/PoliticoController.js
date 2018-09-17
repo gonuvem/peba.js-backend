@@ -16,10 +16,17 @@ exports.searchByUf = async function (req, res, next) {
       .paginate(page, perPage)
     ]);
 
+    // Verifica se foram encontrados políticos
+    if(!(politicians && politicians.length)) {
+      res.status(200);
+      return res.send({ message: "Políticos não encontrados" });
+    }
+
     // Calcular quantas páginas existem
     const pages = Math.ceil(total / perPage);
     
     // Retornar os políticos encontrados e os dados da paginação
+    res.status(201);
     return res.send({ politicians: politicians, total: total, pages: pages });
   } catch (error) {
     next(error);
@@ -57,10 +64,17 @@ exports.searchByTerms = async function (req, res, next) {
       .paginate(page, perPage)
     ]);
 
+    // Verifica se foram encontrados políticos
+    if(!(politicians && politicians.length)) {
+      res.status(200);
+      return res.send({ message: "Políticos não encontrados" });
+    }
+
     // Calcular quantas páginas existem
     const pages = Math.ceil(total / perPage);
 
     // Retornar políticos encontrados e os dados da paginação
+    res.status(201);
     return res.send({ politicians: politicians, total: total, pages: pages });
   } catch (error) {
     next(error);
