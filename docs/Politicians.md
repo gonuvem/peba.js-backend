@@ -67,7 +67,13 @@ Detalha um político de acordo com o id fornecido.
 ### 200 - Detalhes
 ```js
 {
-	"_id": "5b9c034614572fd78650b480",
+	"frequency": {
+		"total": 395,
+		"presence": 381,
+		"justifiedAbsence": 9,
+		"unjustifiedAbsence": 5
+	},
+	"_id": "5b7419fcfc38c7964a15c2b7",
 	"cargo": "Deputado Federal",
 	"email": "dep.átilalira@camara.leg.br",
 	"endereco": "Gabinete 640, Prédio 4, Sala 640, Andar 6",
@@ -76,7 +82,7 @@ Detalha um político de acordo com o id fornecido.
 	"siglaUf": "PI",
 	"telefone": "3215-5640",
 	"urlFoto": "http://www.camara.leg.br/internet/deputado/bandep/74459.jpg",
-	"totalDespesas": "275104.15"
+	"totalDespesas": "269146.57"
 }
 ```
 ### 404 - Político não encontrado
