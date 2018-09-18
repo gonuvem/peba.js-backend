@@ -58,7 +58,9 @@ async function createPoliticiansFromSenadores(senadores) {
       dataNascimento: dados && dados.DataNascimento,
       siglaUfNascimento: dados && dados.UfNaturalidade,
       cargo: 'Senador',
-      situacao: situacao
+      situacao: situacao,
+      totalDespesas: "0.00",
+      frequency: null
     }
   });
 }
