@@ -57,7 +57,7 @@ async function createPoliticiansFromDeputados(deputados) {
     sexo: d.sexo,
     dataNascimento: d.dataNascimento,
     siglaUfNascimento: d.ufNascimento,
-    situacao: d.situacao,
+    situacao: d.ultimoStatus.situacao,
     cargo: 'Deputado Federal'
   }));
 }
