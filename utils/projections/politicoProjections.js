@@ -19,6 +19,7 @@ const politicoDetailProj = {
   endereco      : true,
   email         : true,
   telefone      : true,
+  frequency     : true
 }
 
 module.exports = {

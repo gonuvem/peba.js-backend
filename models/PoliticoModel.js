@@ -15,7 +15,7 @@ const PoliticoSchema = new mongoose.Schema({
   sexo                  : { type: String, required: true },
   dataNascimento        : { type: Date  , required: true },
   siglaUfNascimento     : { type: String, required: true },
-  totalDespesas         : { type: String },
+  totalDespesas         : { type: String, default: "0.00" },
   cargo                 : { type: String, enum: ['Senador', 'Deputado Federal'], required: true },
   situacao              : { type: String },
   registration: String,

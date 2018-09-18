@@ -19,6 +19,11 @@ politicoRoute.applyRoutes(server, '/politicos');
 mailerRoute.applyRoutes(server, '/email');
 glossaryRoute.applyRoutes(server, '/glossary');
 
+// Habilitar CORS
+server.pre((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
 server.on('restifyError', handleErr);
