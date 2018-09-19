@@ -6,7 +6,7 @@ const {
 } = require('./camaraTasks');
 const {
   updateSenadoresTask, updateSenadoresTotalExpenditureTask,
-  updateSenadoresExpensesTask
+  updateSenadoresExpensesTask, updateSenadoresStatusTask,
 } = require('./senadoTasks');
 
 /**
@@ -53,6 +53,7 @@ async function updatePoliticiansTask() {
   try {
     await updateDeputadosTask();
     await updateSenadoresTask();
+    await updateSenadoresStatusTask();
   } catch (error) {
     console.log(error);
     throw error;
