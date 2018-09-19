@@ -21,7 +21,8 @@ const PoliticoSchema = new mongoose.Schema({
   registration: String,
   frequency: {
     total: Number, presence: Number, justifiedAbsence: Number, unjustifiedAbsence: Number
-  }
+  },
+  atualizacao: Date,
 }, { timestamps: true });
 
 PoliticoSchema.index(
