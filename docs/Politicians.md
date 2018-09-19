@@ -82,7 +82,8 @@ Detalha um político de acordo com o id fornecido.
 	"siglaUf": "PI",
 	"telefone": "3215-5640",
 	"urlFoto": "http://www.camara.leg.br/internet/deputado/bandep/74459.jpg",
-	"totalDespesas": "269146.57"
+	"totalDespesas": "269146.57",
+	"atualizacao": "2018-09-19T20:43:04.480Z"
 }
 ```
 ### 404 - Político não encontrado
