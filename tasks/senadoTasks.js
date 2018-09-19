@@ -1,9 +1,11 @@
 const {
-  getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv
+  getSenadoresList, getSenadorDetail, getSenadoresExpensesCsv,
+  getSenadoresEmExercicio, getSenadoresAfastados
 } = require('../services/senado/senadoColector');
 const {
   getSenadoresIds, createPoliticiansFromSenadores, createSenadoresExpenses,
-  getSenadoresTotalExpenditure, parseSenadoresExpenses,
+  getSenadoresTotalExpenditure, parseSenadoresExpenses, getSenadoresDescricaoStatus,
+  getSenadoresSituacao, getSenadoresSuplencia
 } = require('../services/senado/senadoParser');
 const {
   updatePoliticiansByCode, updatePoliticiansByName, updatePoliticianExpenses
@@ -84,8 +86,57 @@ async function updateSenadoresExpensesTask(amount=undefined) {
   return count;
 }
 
+async function updateSenadoresStatusTask() {
+  // Obter todos os senadores da Legislatura
+  console.log('Obtendo os senadores da legislatura...');
+  const senadoresLegis = await getSenadoresList();
+
+  // Obter os senadores em exercício
+  console.log('Obtendo os senadores em exercício...');
+  const senadoresExer = await getSenadoresEmExercicio();
+
+  // Obter os senadores afastados
+  console.log('Obtendo os senadores afastados...');
+  const senadoresAfas = await getSenadoresAfastados();
+
+  /* Obter o campo descricaoStatus de todos os senadores
+  Obter o campo situacao dos senadores em exercício e afastados
+  */
+  console.log('Obtendo a descricaoStatus de todos os senadores e o campo \
+  situação daqueles em exercício e afastados');
+  const [ senadoresDesc, senExer, senAfas ] = await Promise.all([
+    getSenadoresDescricaoStatus(senadoresLegis),
+    getSenadoresSituacao(senadoresExer, 'Exercício'),
+    getSenadoresSituacao(senadoresAfas, 'Afastado'),
+  ]);
+
+  // Os senadores remanescentes são considerados em situação de Suplência
+  console.log('Obtendo situacao de Suplência para senadores restantes...');
+  const senSupl = await getSenadoresSuplencia(senadoresDesc, senExer, senAfas);
+
+  // Concatenar os objetos que contém situação
+  console.log('Concatenando todas as situações...');
+  const senSituacao = senExer.concat(senAfas, senSupl);
+
+  /* Combinar as objetos que contêm a descricaoStatus com aqueles que contêm
+  a situacao dos senadores, considerando o código do senador
+  */
+  console.log('Combinando descricaoStatus com situacao...');
+  const senadoresStatus = senadoresDesc.map(sDesc => 
+    Object.assign(sDesc, 
+      senSituacao.find(sSit => sSit.codigo === sDesc.codigo)));
+
+  // Atualizar o status de cada senador no BD
+  console.log('Atualizando o status de cada senador no BD...')
+  const count = await updatePoliticiansByCode(senadoresStatus);
+
+  console.log(`${ count } status de senadores atualizados.`);
+  return count;
+}
+
 module.exports = {
   updateSenadoresTask,
   updateSenadoresTotalExpenditureTask,
   updateSenadoresExpensesTask,
+  updateSenadoresStatusTask,
 }

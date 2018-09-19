@@ -41,9 +41,20 @@ async function getSenadoresExpensesCsv(year = currentYear) {
   );
 }
 
+async function getSenadoresEmExercicio() {
+  return await rp({ url: `${ senadoAPI }/senador/lista/atual`, json: true });
+}
+
+async function getSenadoresAfastados() {
+  return await rp({ url: `${ senadoAPI }/senador/lista/afastados`,
+  json: true });
+}
+
 module.exports = {
   getSenadoresList,
   getSenadorDetail,
   getSenadoresExpensesCsv,
+  getSenadoresEmExercicio,
+  getSenadoresAfastados,
 }
 

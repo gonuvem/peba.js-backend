@@ -21,7 +21,9 @@ async function converterCsvParaJson(csvString) {
  */
 async function getSenadoresIds(senadoresList) {
   const senadores =
-    senadoresList.ListaParlamentarLegislatura.Parlamentares.Parlamentar;
+    (senadoresList.ListaParlamentarLegislatura
+    || senadoresList.ListaParlamentarEmExercicio
+    || senadoresList.AfastamentoAtual).Parlamentares.Parlamentar;
 
   return senadores.map(sen =>
     sen.IdentificacaoParlamentar.CodigoParlamentar
@@ -37,8 +39,6 @@ async function getSenadoresIds(senadoresList) {
  */
 async function createPoliticiansFromSenadores(senadores) {
   return senadores.map(sen => sen.DetalheParlamentar.Parlamentar).map(s => {
-    const mandato = s.MandatoAtual || s.UltimoMandato;
-    const situacao = s.MandatoAtual ? 'Exercício' : 'Afastado';
     const dados = s.DadosBasicosParlamentar;
     const nome = toTitleCase(
       removeAccents(s.IdentificacaoParlamentar.NomeParlamentar));
@@ -49,7 +49,6 @@ async function createPoliticiansFromSenadores(senadores) {
       urlFoto: s.IdentificacaoParlamentar.UrlFotoParlamentar,
       siglaPartido: s.IdentificacaoParlamentar.SiglaPartidoParlamentar,
       siglaUf: s.IdentificacaoParlamentar.UfParlamentar,
-      descricaoStatus: mandato.DescricaoParticipacao,
       endereco: dados && dados.EnderecoParlamentar,
       email: s.IdentificacaoParlamentar.EmailParlamentar,
       telefone: dados && dados.TelefoneParlamentar,
@@ -58,8 +57,6 @@ async function createPoliticiansFromSenadores(senadores) {
       dataNascimento: dados && dados.DataNascimento,
       siglaUfNascimento: dados && dados.UfNaturalidade,
       cargo: 'Senador',
-      situacao: situacao,
-      totalDespesas: "0.00",
       frequency: null
     }
   });
@@ -142,10 +139,43 @@ async function createSenadoresExpenses(expenses) {
   });
 }
 
+async function getSenadoresDescricaoStatus(senadoresList) {
+  const senadores = senadoresList.ListaParlamentarLegislatura.Parlamentares.Parlamentar;
+  return senadores.map(s => ({
+    codigo: s.IdentificacaoParlamentar.CodigoParlamentar,
+    descricaoStatus: s.Mandatos.Mandato.DescricaoParticipacao,
+  }));
+}
+
+async function getSenadoresSituacao(senadoresList, situacao) {
+  const senadores = (senadoresList.AfastamentoAtual 
+    || senadoresList.ListaParlamentarEmExercicio).Parlamentares.Parlamentar;
+    
+    return senadores.map(sen => ({
+      codigo: sen.IdentificacaoParlamentar.CodigoParlamentar,
+      situacao: situacao,
+    }));
+}
+
+async function getSenadoresSuplencia(senadoresList, exercicioList, afastadosList) {
+  const codesSen = senadoresList.map(s => s.codigo);
+  const codesExer = exercicioList.map(s => s.codigo);
+  const codesAfas = afastadosList.map(s => s.codigo);
+  return codesSen.filter(c => !codesExer.includes(c) && !codesAfas.includes(c))
+  .map(cSup => ({
+    codigo: cSup,
+    situacao: 'Suplência'
+  }));
+}
+
+
 module.exports = {
   getSenadoresIds,
   createPoliticiansFromSenadores,
   parseSenadoresExpenses,
   getSenadoresTotalExpenditure,
   createSenadoresExpenses,
+  getSenadoresDescricaoStatus,
+  getSenadoresSituacao,
+  getSenadoresSuplencia,
 }
