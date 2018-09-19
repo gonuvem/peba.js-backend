@@ -59,8 +59,6 @@ async function createPoliticiansFromDeputados(deputados) {
     siglaUfNascimento: d.ufNascimento,
     situacao: d.ultimoStatus.situacao,
     cargo: 'Deputado Federal',
-    totalDespesas: "0.00",
-    frequency: null
   }));
 }
 
