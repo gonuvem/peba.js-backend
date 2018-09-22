@@ -1,8 +1,4 @@
-const mongoose = require('mongoose');
 const { updatePoliticiansTask } = require('./scheduler');
+const { executeTask } = require('../utils/utils');
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
-.then(updatePoliticiansTask())
-.catch(error => console.log(error))
-
-process.exit();
+executeTask(updatePoliticiansTask);

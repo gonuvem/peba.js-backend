@@ -1,4 +1,5 @@
 const { poolAll } = require('swimmer');
+const mongoose = require('mongoose');
 const currentYear = 2018;
 
 /**
@@ -60,6 +61,17 @@ function resolve(path, obj, separator='.') {
   return properties.reduce((prev, curr) => prev && prev[curr], obj);
 }
 
+async function executeTask(task) {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+    await task();
+  } catch (error) {
+    console.log('Erro: ', error);
+  } finally {
+    process.exit();
+  }
+}
+
 module.exports = {
   toTitleCase,
   montarEndereco,
@@ -68,4 +80,5 @@ module.exports = {
   splitArray,
   currentYear,
   resolve,
+  executeTask,
 }
