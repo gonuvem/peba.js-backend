@@ -81,7 +81,7 @@ async function updateDeputadosFrequency() {
 
     // Obter listas de presença
     console.log('Obtendo listas de presença...');
-    const presList = await parallelPromises(getDeputadoFrequency, regs);
+    const presList = await parallelPromises(getDeputadoFrequency, regs, 5);
 
     // Extrair as frequências
     console.log('Extraindo frequências...');

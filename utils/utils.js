@@ -41,8 +41,12 @@ function removeAccents(str) {
  * concorrente
  */
 async function parallelPromises(asyncFunc, paramList, concurrency=20) {
-  return await poolAll(paramList.map(param => () => asyncFunc(param)),
+  try {
+    return await poolAll(paramList.map(param => () => asyncFunc(param)),
   concurrency);
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function splitArray(array, size) {
