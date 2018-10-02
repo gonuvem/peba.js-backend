@@ -23,7 +23,7 @@ exports.list = async function(req, res, next) {
   try {
     const { letter, page = 0, perPage = 5 } = req.query;
 
-    const query = new RegExp('^'+letter+'\\w+'+'$', 'i');
+    const query = new RegExp('^' + letter + '.*$', 'iu');
     
     // Obter termos
     const [ total, terms ] = await Promise.all([
@@ -31,7 +31,7 @@ exports.list = async function(req, res, next) {
       Glossary.find({ term: query }, glossaryListProj).sort('term')
       .paginate(page, perPage)
     ]);
-
+    
     // Verifica se foram encontrados termos
     if(!(terms && terms.length)) {
       res.status(200);
