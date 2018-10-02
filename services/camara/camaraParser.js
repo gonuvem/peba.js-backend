@@ -156,7 +156,7 @@ async function createDeputadosExpenses(depExpenses) {
       code: Object.values(e).join('_'),
       numDoc: e.numDocumento,
       date: new Date(e.dataDocumento),
-      value: e.valorDocumento.toFixed(2)
+      value: e.valorLiquido.toFixed(2)
     }));
   });
 
