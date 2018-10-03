@@ -21,7 +21,15 @@ glossaryRoute.applyRoutes(server, '/glossary');
 
 // Habilitar CORS
 server.pre((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://www.projetopeba.com.br, http://projetopeba.com.br, https://pebafront.herokuapp.com");
+  const allowedOrigins = [
+    'http://www.projetopeba.com.br',
+    'http://projetopeba.com.br',
+    'https://pebafront.herokuapp.com'
+  ];
+  const origin = req.headers.origin;
+  if(allowedOrigins.includes(origin)){
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   next();
 });
 server.use(restify.plugins.bodyParser());
