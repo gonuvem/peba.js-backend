@@ -23,8 +23,10 @@ glossaryRoute.applyRoutes(server, '/glossary');
 server.pre((req, res, next) => {
   res.header("Access-Control-Allow-Origin", [
     "http://www.projetopeba.com.br",
-    "http://projetopeba.com.br"
+    "http://projetopeba.com.br",
+    "https://pebafront.herokuapp.com/"
   ]);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 server.use(restify.plugins.bodyParser());
