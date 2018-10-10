@@ -20,7 +20,9 @@ glossaryRoute.applyRoutes(server, '/glossary');
 server.pre((req, res, next) => {
   const allowedOrigins = [
     'http://www.projetopeba.com.br',
+    'https://www.projetopeba.com.br',
     'http://projetopeba.com.br',
+    'https://projetopeba.com.br',
   ];
   const origin = req.headers.origin;
   if(allowedOrigins.includes(origin)){
