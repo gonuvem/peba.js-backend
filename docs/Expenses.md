@@ -66,8 +66,8 @@ A lista retornada é paginada e ordenada da despesa mais nova para a mais velha.
 ```
 
 ## Exemplos de chamada
-- Despesas do Deputado Assis Carvalho em 2018 - [/expenses?politicianId=5b9c034614572fd78650b47b&year=2018](http://peba-api-dev.herokuapp.com/expenses?politicianId=5b9c034614572fd78650b47b&year=2018)
-- Despesas do Senador Romário em 2018, 50 por página - [/expenses?politicianId=5b9c034e14572fd78650b7f4&year=2018&perPage=50](http://peba-api-dev.herokuapp.com/expenses?politicianId=5b9c034e14572fd78650b7f4&year=2018&perPage=50)
+- [/expenses?politicianId=5b9c034614572fd78650b47b&year=2018](http://localhost:8080/expenses?politicianId=5b9c034614572fd78650b47b&year=2018)
+- [/expenses?politicianId=5b9c034e14572fd78650b7f4&year=2018&perPage=50](http://localhost:8080/expenses?politicianId=5b9c034e14572fd78650b7f4&year=2018&perPage=50)
 
 # GET /expenses/charts
 ## Descrição
@@ -112,5 +112,5 @@ Obtém os dados para a geração dos gráficos.
 }
 ```
 ## Exemplos de chamada
-- Dados para gráficos das despesas do Deputado Assis Carvalho - [/expenses/charts?politicianId=5b9c034614572fd78650b47b](http://peba-api-dev.herokuapp.com/expenses/charts?politicianId=5b9c034614572fd78650b47b)
-- Dados para gráficos das despesas do Senador Romário - [/expenses/charts?politicianId=5b9c034e14572fd78650b7f4](http://peba-api-dev.herokuapp.com/expenses/charts?politicianId=5b9c034e14572fd78650b7f4)
+- [/expenses/charts?politicianId=5b9c034614572fd78650b47b](http://localhost:8080/expenses/charts?politicianId=5b9c034614572fd78650b47b)
+- [/expenses/charts?politicianId=5b9c034e14572fd78650b7f4](http://localhost:8080/expenses/charts?politicianId=5b9c034e14572fd78650b7f4)

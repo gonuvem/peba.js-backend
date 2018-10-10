@@ -6,8 +6,6 @@ COPY package*.json ./
 
 RUN yarn
 
-RUN yarn global add gulp
-
 COPY . .
 
 EXPOSE 8080

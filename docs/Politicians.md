@@ -51,8 +51,8 @@ A lista retornada é paginada.
 },
 ```
 ## Exemplos de chamada
-- Políticos do Piauí - [/politicos?uf=PI](http://peba-api-dev.herokuapp.com/politicos?uf=PI)
-- Políticos do Piauí, segunda página - [/politicos?uf=PI&page=1](http://peba-api-dev.herokuapp.com/politicos?uf=PI&page=1)
+- Políticos do Piauí - [/politicos?uf=PI](http://localhost:8080/politicos?uf=PI)
+- Políticos do Piauí, segunda página - [/politicos?uf=PI&page=1](http://localhost:8080/politicos?uf=PI&page=1)
 
 # GET /politicos/{id}
 ## Descrição
@@ -94,7 +94,7 @@ Detalha um político de acordo com o id fornecido.
 }
 ```
 ## Exemplos de chamada
-- Detalhes Capitão Fábio Abreu - [/politicos/5b9c034614572fd78650b49f](http://peba-api-dev.herokuapp.com/politicos/5b9c034614572fd78650b49f)
+- [/politicos/5b9c034614572fd78650b49f](http://localhost:8080/politicos/5b9c034614572fd78650b49f)
 
 # POST /politicos
 ## Descrição
